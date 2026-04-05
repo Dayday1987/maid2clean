@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Maid To Clean</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="tail-container">
+    <!-- Paste full navbar from index.html here -->
+    <nav class="bg-white border-b shadow-sm sticky top-0 z-50">...[navbar]...</nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <h1 class="text-4xl font-semibold mb-2">Welcome back, David 👋</h1>
+        <p class="text-teal-600">Your next cleaning is scheduled for April 12 • 9 AM</p>
+        
+        <!-- Message compose box -->
+        <div class="mt-12 bg-white rounded-3xl p-8 shadow">
+            <h3 class="font-semibold flex items-center gap-x-2 mb-6"><i class="fa-solid fa-paper-plane"></i> Message the team</h3>
+            <textarea id="customer-message-input" rows="3" class="w-full border rounded-3xl px-6 py-4" placeholder="Need to reschedule or add a note?"></textarea>
+            <button onclick="sendCustomerMessage()" 
+                    class="mt-4 px-8 py-4 bg-teal-500 text-white rounded-3xl font-medium">Send message to admin</button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+            <div class="bg-white rounded-3xl p-8">Upcoming bookings • April 12</div>
+            <div class="bg-white rounded-3xl p-8">Past cleanings • 8 total</div>
+            <div class="bg-white rounded-3xl p-8">Loyalty points • 240</div>
+        </div>
+    </div>
+    
+    <script>
+        // Paste the full script from index.html (auth, messages, etc.)
+        // sendCustomerMessage() is already defined in the main script above
+    </script>
+</body>
+</html>
