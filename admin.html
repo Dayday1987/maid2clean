@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Maid To Clean</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+        :root { --tw-color-primary: #00c4b4; }
+        .tail-container * { font-family: 'Poppins', system_ui, sans-serif; }
+    </style>
+</head>
+<body class="tail-container">
+
+    <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
+                <h1 class="text-3xl font-semibold text-gray-900">Maid To Clean • Admin</h1>
+            </div>
+            <div id="auth-buttons" class="flex items-center gap-x-3"></div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <h1 class="text-4xl font-semibold mb-8">Admin Dashboard</h1>
+
+        <!-- Global Announcement -->
+        <div class="bg-amber-50 border border-amber-200 rounded-3xl p-8 mb-12">
+            <h3 class="font-semibold mb-4 flex items-center gap-x-2"><i class="fa-solid fa-bullhorn"></i> Post Announcement to All Users</h3>
+            <textarea id="announcement-input" rows="3" class="w-full border rounded-3xl px-6 py-4" placeholder="Type announcement here..."></textarea>
+            <button onclick="postAnnouncement()" class="mt-4 px-8 py-4 bg-teal-500 text-white rounded-3xl">Send to Everyone</button>
+        </div>
+
+        <!-- Users List + History -->
+        <h2 class="text-2xl font-semibold mb-6">All Customers &amp; Their History</h2>
+        <div id="users-list" class="space-y-8"></div>
+    </div>
+
+    <script>
+        // ====================== YOUR REAL KEYS ======================
+        const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
+
+        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+
+        async function loadAdminDashboard() {
+            const { data: { user } } = await supabase.auth.getUser();
+            currentUser = user;
+            if (!user) return window.location.href = 'index.html';
+
+            // Verify admin
+            const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+            if (!profile || profile.role !== 'admin') {
+                alert("Access denied. Admin only.");
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            renderAuthButtons();
+            await loadAllUsers();
+        }
+
+        function renderAuthButtons() {
+            const container = document.getElementById('auth-buttons');
+            container.innerHTML = `
+                <span class="text-sm font-medium">👋 Admin • ${currentUser.email}</span>
+                <button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>
+            `;
+        }
+
+        async function loadAllUsers() {
+            const { data: users } = await supabase
+                .from('profiles')
+                .select('id, full_name, email')
+                .eq('role', 'customer');
+
+            const container = document.getElementById('users-list');
+            container.innerHTML = '';
+
+            for (const user of users || []) {
+                // Get user's bookings
+                const { data: bookings } = await supabase
+                    .from('bookings')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('date', { ascending: false });
+
+                // Get user's messages (from admin)
+                const { data: messages } = await supabase
+                    .from('messages')
+                    .select('*')
+                    .eq('to_user', user.id)
+                    .order('created_at', { ascending: false });
+
+                const html = `
+                <div class="bg-white rounded-3xl shadow p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-2xl font-semibold">${user.full_name || user.email}</h3>
+                            <p class="text-gray-500">${user.email}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Bookings -->
+                        <div>
+                            <h4 class="font-medium mb-3">Cleaning Services</h4>
+                            ${bookings && bookings.length ? bookings.map(b => `
+                                <div class="text-sm mb-2">${b.date} – ${b.service_type} – $${b.amount}</div>
+                            `).join('') : '<p class="text-gray-400">No bookings yet</p>'}
+                        </div>
+
+                        <!-- Messages -->
+                        <div>
+                            <h4 class="font-medium mb-3">Notifications Sent</h4>
+                            ${messages && messages.length ? messages.map(m => `
+                                <div class="text-sm mb-2">${new Date(m.created_at).toLocaleDateString()}: ${m.text}</div>
+                            `).join('') : '<p class="text-gray-400">No notifications sent</p>'}
+                        </div>
+
+                        <!-- Quick Action -->
+                        <div>
+                            <button onclick="sendDirectNotification('${user.id}', '${user.email}')" 
+                                    class="w-full py-3 bg-amber-500 text-white rounded-3xl text-sm font-medium">
+                                Send Notification to this user
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+            }
+        }
+
+        async function postAnnouncement() {
+            const text = document.getElementById('announcement-input').value.trim();
+            if (!text) return alert("Please type an announcement");
+
+            await supabase.from('announcements').insert({ text: text, created_by: currentUser.id });
+            alert("✅ Announcement sent to all customers!");
+            document.getElementById('announcement-input').value = '';
+        }
+
+        async function sendDirectNotification(userId, email) {
+            const text = prompt(`Send notification to ${email}:`);
+            if (!text) return;
+
+            await supabase.from('messages').insert({
+                from_user: currentUser.id,
+                to_user: userId,
+                text: text
+            });
+            alert("✅ Notification sent!");
+            loadAllUsers();
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        window.onload = loadAdminDashboard;
+    </script>
+</body>
+</html>
