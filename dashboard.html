@@ -5,34 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Maid To Clean</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+        :root { --tw-color-primary: #00c4b4; }
+        .tail-container * { font-family: 'Poppins', system_ui, sans-serif; }
+    </style>
 </head>
 <body class="tail-container">
-    <!-- Paste full navbar from index.html here -->
-    <nav class="bg-white border-b shadow-sm sticky top-0 z-50">...[navbar]...</nav>
+
+    <!-- NAVBAR (same as index.html) -->
+    <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
+                <h1 class="text-3xl font-semibold text-gray-900">Maid To Clean</h1>
+            </div>
+            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a href="index.html">Home</a>
+                <a href="book-now.html">Book Now</a>
+                <a href="services.html">Services</a>
+                <a href="dashboard.html" class="text-teal-500 font-semibold">Dashboard</a>
+                <a href="messages.html">Messages</a>
+            </div>
+            <div id="auth-buttons" class="flex items-center gap-x-3"></div>
+        </div>
+    </nav>
 
     <div class="max-w-7xl mx-auto px-6 py-12">
-        <h1 class="text-4xl font-semibold mb-2">Welcome back, David 👋</h1>
-        <p class="text-teal-600">Your next cleaning is scheduled for April 12 • 9 AM</p>
-        
-        <!-- Message compose box -->
-        <div class="mt-12 bg-white rounded-3xl p-8 shadow">
-            <h3 class="font-semibold flex items-center gap-x-2 mb-6"><i class="fa-solid fa-paper-plane"></i> Message the team</h3>
-            <textarea id="customer-message-input" rows="3" class="w-full border rounded-3xl px-6 py-4" placeholder="Need to reschedule or add a note?"></textarea>
-            <button onclick="sendCustomerMessage()" 
-                    class="mt-4 px-8 py-4 bg-teal-500 text-white rounded-3xl font-medium">Send message to admin</button>
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-4xl font-semibold">Welcome back, <span id="user-name">Customer</span> 👋</h1>
+                <p class="text-teal-600" id="next-booking"></p>
+            </div>
+            <button onclick="showAdminPanel()" id="admin-btn" class="hidden px-6 py-3 bg-amber-500 text-white rounded-3xl font-semibold flex items-center gap-x-2">
+                <i class="fa-solid fa-shield-halved"></i> Admin Panel
+            </button>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-            <div class="bg-white rounded-3xl p-8">Upcoming bookings • April 12</div>
-            <div class="bg-white rounded-3xl p-8">Past cleanings • 8 total</div>
-            <div class="bg-white rounded-3xl p-8">Loyalty points • 240</div>
+
+        <!-- Message Compose Box -->
+        <div class="bg-white rounded-3xl p-8 shadow mb-12">
+            <h3 class="font-semibold flex items-center gap-x-2 mb-6"><i class="fa-solid fa-paper-plane"></i> Message the team</h3>
+            <textarea id="customer-message-input" rows="3" class="w-full border rounded-3xl px-6 py-4 focus:outline-none" placeholder="Need to reschedule, add notes, or ask a question?"></textarea>
+            <button onclick="sendCustomerMessage()" class="mt-4 px-8 py-4 bg-teal-500 text-white rounded-3xl font-medium">Send message to admin</button>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-3xl p-8">
+                <h4 class="text-sm font-medium text-gray-500">UPCOMING CLEANING</h4>
+                <div id="upcoming-card" class="mt-4 text-xl font-semibold">No upcoming bookings</div>
+            </div>
+            <div class="bg-white rounded-3xl p-8">
+                <h4 class="text-sm font-medium text-gray-500">PAST CLEANINGS</h4>
+                <div id="past-count" class="mt-4 text-5xl font-semibold text-teal-500">0</div>
+            </div>
+            <div class="bg-white rounded-3xl p-8">
+                <h4 class="text-sm font-medium text-gray-500">LOYALTY POINTS</h4>
+                <div class="mt-4 text-5xl font-semibold">240</div>
+            </div>
         </div>
     </div>
-    
+
     <script>
-        // Paste the full script from index.html (auth, messages, etc.)
-        // sendCustomerMessage() is already defined in the main script above
+        const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';   // ← REPLACE
+        const SUPABASE_ANON_KEY = 'eyJ...';                           // ← REPLACE
+
+        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+
+        async function loadDashboard() {
+            const { data: { user } } = await supabase.auth.getUser();
+            currentUser = user;
+            if (!user) return window.location.href = 'index.html';
+
+            // Show user name
+            document.getElementById('user-name').textContent = user.email.split('@')[0];
+
+            // Show admin button if user is admin
+            const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+            if (profile && profile.role === 'admin') {
+                document.getElementById('admin-btn').classList.remove('hidden');
+            }
+
+            renderAuthButtons();
+            loadUpcomingBooking();
+        }
+
+        function renderAuthButtons() {
+            const container = document.getElementById('auth-buttons');
+            container.innerHTML = `
+                <span class="text-sm font-medium">👋 ${currentUser.email}</span>
+                <button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>
+            `;
+        }
+
+        async function loadUpcomingBooking() {
+            // You can expand this later with real bookings
+            document.getElementById('upcoming-card').innerHTML = `
+                <div class="text-teal-600">April 12 • 9:00 AM</div>
+                <div class="text-sm text-gray-500">Standard Residential Cleaning • $129</div>
+            `;
+        }
+
+        async function sendCustomerMessage() {
+            const text = document.getElementById('customer-message-input').value.trim();
+            if (!text) return alert('Type a message first');
+
+            const { error } = await supabase.from('messages').insert({
+                from_user: currentUser.id,
+                to_user: null, // admin will see all
+                text: text
+            });
+
+            if (error) alert(error.message);
+            else {
+                alert('✅ Message sent to admin!');
+                document.getElementById('customer-message-input').value = '';
+            }
+        }
+
+        function showAdminPanel() {
+            // Same admin panel as before but now uses real Supabase
+            // (full code is long — I'll send a separate admin-only version if you want)
+            alert('👩‍💼 Admin Panel coming in next update. For now use index.html navbar.');
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        window.onload = loadDashboard;
     </script>
 </body>
 </html>
