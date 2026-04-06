@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services - Maid To Clean</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+        .tail-container * { font-family: 'Poppins', system_ui, sans-serif; }
+    </style>
+</head>
+<body class="tail-container">
+
+    <!-- NAVBAR (same as index.html) -->
+    <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
+                <h1 class="text-3xl font-semibold text-gray-900">Maid To Clean</h1>
+            </div>
+            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a href="index.html">Home</a>
+                <a href="book-now.html">Book Now</a>
+                <a href="services.html" class="text-teal-500 font-semibold">Services</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="messages.html">Messages</a>
+            </div>
+            <div id="auth-buttons" class="flex items-center gap-x-3"></div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="bg-teal-600 text-white py-16">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h1 class="text-5xl font-semibold mb-4">Our Services</h1>
+            <p class="text-xl max-w-2xl mx-auto">Professional cleaning solutions tailored to your needs. Serving Montgomery and the River Region.</p>
+        </div>
+    </header>
+
+    <!-- SERVICES GRID -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Deep Cleaning -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow">
+                    <img src="images/deep-clean.webp" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-semibold mb-3">Deep Cleaning</h3>
+                        <p class="text-gray-600">Our most thorough cleaning service. We reach every corner, scrub every surface, and leave your home immaculately refreshed from top to bottom.</p>
+                        <a href="book-now.html" class="mt-6 inline-block px-8 py-3 bg-teal-500 text-white rounded-3xl font-medium">Book Deep Cleaning</a>
+                    </div>
+                </div>
+
+                <!-- Standard Cleaning -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow">
+                    <img src="images/kitchen.webp" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-semibold mb-3">Standard Cleaning</h3>
+                        <p class="text-gray-600">Regular maintenance cleaning to keep your home consistently fresh and welcoming. Perfect for weekly, bi-weekly, or monthly scheduling.</p>
+                        <a href="book-now.html" class="mt-6 inline-block px-8 py-3 bg-teal-500 text-white rounded-3xl font-medium">Book Standard Cleaning</a>
+                    </div>
+                </div>
+
+                <!-- Move In/Out -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow">
+                    <img src="images/move-in-out.webp" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-semibold mb-3">Move-In / Move-Out Cleaning</h3>
+                        <p class="text-gray-600">Perfect for transitions. We ensure every space is spotless and ready for new beginnings or clean handovers.</p>
+                        <a href="book-now.html" class="mt-6 inline-block px-8 py-3 bg-teal-500 text-white rounded-3xl font-medium">Book Move-In/Out</a>
+                    </div>
+                </div>
+
+                <!-- Office Cleaning -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow">
+                    <img src="images/commercial-office.webp" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-semibold mb-3">Office Cleaning</h3>
+                        <p class="text-gray-600">Professional workspace cleaning to keep your business environment productive, healthy, and impressive.</p>
+                        <a href="book-now.html" class="mt-6 inline-block px-8 py-3 bg-teal-500 text-white rounded-3xl font-medium">Book Office Cleaning</a>
+                    </div>
+                </div>
+
+                <!-- Commercial Cleaning -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow">
+                    <img src="images/small-office.webp" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-semibold mb-3">Commercial Cleaning</h3>
+                        <p class="text-gray-600">Comprehensive cleaning solutions for businesses of all sizes.</p>
+                        <a href="book-now.html" class="mt-6 inline-block px-8 py-3 bg-teal-500 text-white rounded-3xl font-medium">Book Commercial Cleaning</a>
+                    </div>
+                </div>
+
+                <!-- Post-Construction -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow">
+                    <img src="images/new-construction.webp" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-semibold mb-3">Post-Construction Cleaning</h3>
+                        <p class="text-gray-600">Specialized cleaning after renovations or construction. We remove dust, debris, and residue.</p>
+                        <a href="book-now.html" class="mt-6 inline-block px-8 py-3 bg-teal-500 text-white rounded-3xl font-medium">Book Post-Construction</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- POPULAR ADD-ONS -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-semibold text-center mb-10">Popular Add-Ons</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white rounded-3xl p-6 text-center">Oven Cleaning <span class="text-teal-500 font-medium">+$35</span></div>
+                <div class="bg-white rounded-3xl p-6 text-center">Refrigerator Cleaning <span class="text-teal-500 font-medium">+$40</span></div>
+                <div class="bg-white rounded-3xl p-6 text-center">Interior Windows <span class="text-teal-500 font-medium">+$30</span></div>
+                <div class="bg-white rounded-3xl p-6 text-center">Laundry Service <span class="text-teal-500 font-medium">+$25</span></div>
+                <div class="bg-white rounded-3xl p-6 text-center">Cabinet Organization <span class="text-teal-500 font-medium">+$45</span></div>
+                <div class="bg-white rounded-3xl p-6 text-center">Baseboards <span class="text-teal-500 font-medium">+$20</span></div>
+                <div class="bg-white rounded-3xl p-6 text-center">Ceiling Fans <span class="text-teal-500 font-medium">+$15</span></div>
+                <div class="bg-white rounded-3xl p-6 text-center">Blinds Cleaning <span class="text-teal-500 font-medium">+$35</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICE AREAS -->
+    <section class="py-16 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-semibold mb-4">Proudly serving the River Region</h2>
+            <div class="flex flex-wrap justify-center gap-x-8 gap-y-2 text-lg">
+                <div>Montgomery AL</div>
+                <div>Prattville AL</div>
+                <div>Wetumpka AL</div>
+                <div>Hope Hull AL</div>
+                <div>Tallassee AL</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="py-20 text-center">
+        <div class="max-w-2xl mx-auto px-6">
+            <h2 class="text-4xl font-semibold mb-6">Ready to Experience the Difference?</h2>
+            <p class="text-xl text-gray-600 mb-10">Book your cleaning service today and see why our clients trust us with their homes and offices.</p>
+            <a href="book-now.html" class="inline-flex items-center gap-x-3 bg-teal-500 text-white px-12 py-6 rounded-3xl text-xl font-semibold">Book Now</a>
+        </div>
+    </section>
+
+    <script>
+        // Same auth script as index.html (you can copy from your current index.html)
+        window.onload = () => console.log('%c✅ Services page loaded', 'color:#00c4b4');
+    </script>
+</body>
+</html>
