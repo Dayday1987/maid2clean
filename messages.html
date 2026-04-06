@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inbox - Maid To Clean</title>
+    <title>Messages - Maid To Clean</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -34,70 +34,54 @@
     </nav>
 
     <div class="max-w-4xl mx-auto px-6 py-12">
-        <h1 class="text-4xl font-semibold mb-8 flex items-center gap-x-3">
-            📥 Your Inbox
-        </h1>
+        <h1 class="text-4xl font-semibold mb-8">📥 Your Messages & Notifications</h1>
+        
+        <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6 mb-8">
+            <p class="text-amber-800">You can no longer send messages through the website.<br>
+            For any questions, changes, or special requests, please <a href="mailto:stephanie.maidtoclean@gmail.com" class="underline font-medium">email support</a>.</p>
+        </div>
+
         <div id="inbox-list" class="space-y-6"></div>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';   // ← REPLACE
-        const SUPABASE_ANON_KEY = 'eyJ...';                           // ← REPLACE
+        const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
 
         const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let currentUser = null;
-
-        async function loadInbox() {
+        async function loadMessages() {
             const { data: { user } } = await supabase.auth.getUser();
-            currentUser = user;
             if (!user) return window.location.href = 'index.html';
-
-            renderAuthButtons();
 
             const { data: messages } = await supabase
                 .from('messages')
                 .select('*')
-                .or(`from_user.eq.${user.id},to_user.eq.${user.id}`)
+                .eq('to_user', user.id)
                 .order('created_at', { ascending: false });
 
             const container = document.getElementById('inbox-list');
-            container.innerHTML = '';
 
             if (!messages || messages.length === 0) {
-                container.innerHTML = `<p class="text-gray-400 text-center py-12">No messages yet. Your admin will reach out soon!</p>`;
+                container.innerHTML = `<p class="text-gray-400 text-center py-12">No notifications yet.</p>`;
                 return;
             }
 
             messages.forEach(msg => {
-                const isFromAdmin = msg.from_user !== user.id;
                 const div = document.createElement('div');
-                div.className = `flex gap-4 p-6 rounded-3xl ${isFromAdmin ? 'bg-amber-50' : 'bg-teal-50'}`;
+                div.className = "bg-white rounded-3xl p-6 shadow";
                 div.innerHTML = `
-                    <div class="flex-1">
-                        <div class="font-medium">${isFromAdmin ? 'Stephanie • Maid To Clean' : 'You'}</div>
-                        <p class="mt-1">${msg.text}</p>
-                        <p class="text-xs text-gray-400 mt-3">${new Date(msg.created_at).toLocaleString()}</p>
+                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                        <span>From: Maid To Clean</span>
+                        <span>${new Date(msg.created_at).toLocaleDateString()}</span>
                     </div>
+                    <p class="text-gray-700">${msg.text}</p>
                 `;
                 container.appendChild(div);
             });
         }
 
-        function renderAuthButtons() {
-            const container = document.getElementById('auth-buttons');
-            container.innerHTML = `
-                <span class="text-sm font-medium">👋 ${currentUser.email}</span>
-                <button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>
-            `;
-        }
-
-        async function logout() {
-            await supabase.auth.signOut();
-            window.location.href = 'index.html';
-        }
-
-        window.onload = loadInbox;
+        window.onload = loadMessages;
     </script>
 </body>
 </html>
