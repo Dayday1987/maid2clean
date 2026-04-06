@@ -35,6 +35,11 @@
                 <a href="services.html" class="hover:text-teal-500">Services</a>
                 <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
                 <a href="messages.html" class="hover:text-teal-500">Messages</a>
+                <span id="admin-link" class="hidden">
+                    <a href="admin.html" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
+                        <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
+                    </a>
+                </span>
             </div>
             <div id="auth-buttons" class="flex items-center gap-x-3"></div>
         </div>
@@ -53,7 +58,7 @@
         </div>
     </header>
 
-    <!-- SERVICES (with your images) -->
+    <!-- SERVICES -->
     <section class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -64,7 +69,7 @@
                     <a href="book-now.html" class="text-teal-500 font-medium">Book →</a>
                 </div>
                 <div class="bg-white rounded-3xl p-8 card-hover">
-                    <img src="images/bathroom.webp" class="w-full h-48 object-cover rounded-3xl mb-6" alt="Deep Cleaning">
+                    <img src="images/deep-clean.webp" class="w-full h-48 object-cover rounded-3xl mb-6" alt="Deep Cleaning">
                     <h4 class="text-2xl font-semibold mb-2">Deep Cleaning</h4>
                     <p class="text-gray-600 mb-6">Spring cleaning, move-in/move-out, post-renovation.</p>
                     <a href="book-now.html" class="text-teal-500 font-medium">Book →</a>
@@ -121,10 +126,10 @@
     </footer>
 
     <script>
-        // ====================== YOUR KEYS ======================
-        const SUPABASE_URL = https://iyeifutvbcumkrcykbcc.supabase.co;   // ← CHANGE THIS
-        const SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM;
-        
+        // ====================== YOUR REAL KEYS ======================
+        const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
+
         const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentUser = null;
@@ -144,86 +149,15 @@
                     <button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>
                 `;
             } else {
-                container.innerHTML = `<button onclick="showLoginModal()" class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl text-sm font-semibold">Login / Sign Up</button>`;
+                container.innerHTML = `<button onclick="window.location.href='index.html'" class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl text-sm font-semibold">Login / Sign Up</button>`;
             }
         }
 
         async function checkIfAdmin() {
             const { data: profile } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
             if (profile && profile.role === 'admin') {
-                // Add Admin button to navbar
-                const nav = document.querySelector('nav > div');
-                const adminBtn = document.createElement('button');
-                adminBtn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Admin`;
-                adminBtn.className = "ml-4 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl text-sm font-semibold flex items-center gap-x-2";
-                adminBtn.onclick = showAdminPanel;
-                nav.appendChild(adminBtn);
+                document.getElementById('admin-link').classList.remove('hidden');
             }
-        }
-
-        // ====================== FULL ADMIN PANEL ======================
-        function showAdminPanel() {
-            const modalHTML = `
-            <div onclick="if(event.target.id==='admin-modal')hideAdminPanel()" id="admin-modal"
-                 class="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
-                <div class="bg-white rounded-3xl max-w-4xl w-full mx-4 p-8">
-                    <h2 class="text-3xl font-semibold mb-8">👩‍💼 Admin Control Center</h2>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Broadcast Announcement -->
-                        <div>
-                            <h3 class="font-semibold mb-4 flex items-center gap-x-2"><i class="fa-solid fa-bullhorn"></i> Post Company Announcement</h3>
-                            <textarea id="announcement-input" rows="5" class="w-full border rounded-3xl px-6 py-4" placeholder="Type announcement here..."></textarea>
-                            <button onclick="postAnnouncement()" class="mt-4 w-full py-4 bg-teal-500 text-white rounded-3xl font-semibold">SEND TO ALL CUSTOMERS</button>
-                        </div>
-
-                        <!-- Direct Message -->
-                        <div>
-                            <h3 class="font-semibold mb-4 flex items-center gap-x-2"><i class="fa-solid fa-envelope"></i> Send Direct Message</h3>
-                            <select id="customer-select" class="w-full border rounded-3xl px-6 py-4 mb-4">
-                                <option value="">Select customer...</option>
-                                <!-- Customers will appear here once you add more users -->
-                            </select>
-                            <textarea id="dm-input" rows="5" class="w-full border rounded-3xl px-6 py-4" placeholder="Type message..."></textarea>
-                            <button onclick="sendDirectMessage()" class="mt-4 w-full py-4 bg-amber-500 text-white rounded-3xl font-semibold">SEND PRIVATE MESSAGE</button>
-                        </div>
-                    </div>
-
-                    <button onclick="hideAdminPanel()" class="mt-8 w-full py-3 text-gray-400">Close</button>
-                </div>
-            </div>`;
-
-            const div = document.createElement('div');
-            div.innerHTML = modalHTML;
-            document.body.appendChild(div.firstElementChild);
-        }
-
-        function hideAdminPanel() {
-            const modal = document.getElementById('admin-modal');
-            if (modal) modal.remove();
-        }
-
-        async function postAnnouncement() {
-            const text = document.getElementById('announcement-input').value.trim();
-            if (!text) return alert("Please type an announcement");
-
-            await supabase.from('announcements').insert({ text: text, created_by: currentUser.id });
-            hideAdminPanel();
-            alert("✅ Announcement broadcast to all customers!");
-        }
-
-        async function sendDirectMessage() {
-            const toUser = document.getElementById('customer-select').value;
-            const text = document.getElementById('dm-input').value.trim();
-            if (!toUser || !text) return alert("Please select a customer and type a message");
-
-            await supabase.from('messages').insert({
-                from_user: currentUser.id,
-                to_user: toUser,
-                text: text
-            });
-            hideAdminPanel();
-            alert("✅ Direct message sent!");
         }
 
         async function logout() {
@@ -231,12 +165,7 @@
             window.location.href = 'index.html';
         }
 
-        // Load everything
         window.onload = loadUser;
     </script>
 </body>
 </html>
-        // ====================== YOUR KEYS ======================
-                                   // ← CHANGE THIS
-
-        
