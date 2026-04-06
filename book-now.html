@@ -35,6 +35,8 @@
     </nav>
 
     <div class="max-w-3xl mx-auto px-6 py-12">
+        <img src="images/homepage.webp" class="w-full h-64 object-cover rounded-3xl mb-8 shadow-xl">
+
         <h1 class="text-5xl font-semibold text-center mb-2">Book Your Cleaning</h1>
         <p class="text-center text-gray-500 mb-10">Secure • Powered by Stripe</p>
 
@@ -142,16 +144,16 @@
     </div>
 
     <script>
-        // ====================== YOUR KEYS ======================
-        const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';   // ← REPLACE
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';                           // ← REPLACE
+        // ====================== YOUR REAL KEYS ======================
+        const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
         const STRIPE_PUBLISHABLE_KEY = 'pk_test_51TJFwZ2MxWcKELxTUlf5FKYkUdVlKWcmfVAcojg9rc1T8tDYzGMy2LyWB6bNFojbmRWHDuLMKTfwNwNsMZfmcIK300XrB93Uk9';
 
         const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
         let elements;
         let currentUser = null;
-        let bookingType = 'one-time';   // 'one-time' or 'subscription'
+        let bookingType = 'one-time';
 
         async function init() {
             const { data: { user } } = await supabase.auth.getUser();
@@ -164,8 +166,14 @@
             } else {
                 statusEl.innerHTML = `🔑 Booking as guest. You’ll get a confirmation email.`;
             }
-
             renderAuthButtons();
+        }
+
+        function renderAuthButtons() {
+            const container = document.getElementById('auth-buttons');
+            container.innerHTML = currentUser 
+                ? `<span class="text-sm font-medium">👋 ${currentUser.email}</span><button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>`
+                : `<button onclick="window.location.href='index.html'" class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl text-sm font-semibold">Login / Sign Up</button>`;
         }
 
         function setBookingType(type) {
@@ -179,8 +187,72 @@
             document.getElementById('subscription-fields').classList.toggle('hidden', type !== 'subscription');
         }
 
-        // ... (rest of the payment functions are the same as before)
-        // I kept the full code clean — the payment flow is identical to previous version but now supports subscriptions.
+        function startPayment(method) {
+            if (method === 'apple_pay' || method === 'google_pay' || method === 'paypal') {
+                alert(`✅ ${method.toUpperCase()} selected! (Demo mode - payment successful)`);
+                completeBooking();
+            }
+        }
+
+        function showCardForm() {
+            document.getElementById('card-container').classList.remove('hidden');
+            elements = stripe.elements();
+            const card = elements.create('card');
+            card.mount('#card-element');
+        }
+
+        async function processCardPayment() {
+            alert('✅ Card payment successful (demo mode)');
+            completeBooking();
+        }
+
+        async function completeBooking() {
+            const serviceType = document.getElementById('service-type').value;
+            const date = document.getElementById('booking-date') ? document.getElementById('booking-date').value : 'N/A';
+            const time = document.getElementById('booking-time') ? document.getElementById('booking-time').value : 'N/A';
+            const address = document.getElementById('address').value || 'Montgomery, AL';
+
+            let guestEmail = null, guestName = null;
+            if (!currentUser) {
+                guestName = document.getElementById('guest-name').value || 'Guest';
+                guestEmail = document.getElementById('guest-email').value;
+                if (!guestEmail) return alert('Please enter your email for guest booking');
+            }
+
+            // Save to Supabase
+            await supabase.from('bookings').insert({
+                user_id: currentUser ? currentUser.id : null,
+                service_type: serviceType,
+                date: date,
+                time: time,
+                amount: bookingType === 'subscription' ? 99 : 129,
+                address: address,
+                guest_email: guestEmail,
+                guest_name: guestName,
+                status: 'confirmed'
+            });
+
+            // Show success
+            const modal = document.getElementById('success-modal');
+            const text = document.getElementById('success-text');
+            text.textContent = currentUser 
+                ? `Your ${serviceType} has been booked and saved to your account!` 
+                : `Thank you! Your booking is confirmed. A confirmation was sent to ${guestEmail}.`;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            if (currentUser) window.location.href = 'dashboard.html';
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
 
         window.onload = init;
     </script>
