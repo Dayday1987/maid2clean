@@ -5,36 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inbox - Maid To Clean</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+        :root { --tw-color-primary: #00c4b4; }
+        .tail-container * { font-family: 'Poppins', system_ui, sans-serif; }
+    </style>
 </head>
 <body class="tail-container">
-    <!-- Paste navbar -->
-    <nav class="bg-white border-b shadow-sm sticky top-0 z-50">...[navbar]...</nav>
-    
+
+    <!-- NAVBAR -->
+    <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
+                <h1 class="text-3xl font-semibold text-gray-900">Maid To Clean</h1>
+            </div>
+            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a href="index.html">Home</a>
+                <a href="book-now.html">Book Now</a>
+                <a href="services.html">Services</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="messages.html" class="text-teal-500 font-semibold">Messages</a>
+            </div>
+            <div id="auth-buttons" class="flex items-center gap-x-3"></div>
+        </div>
+    </nav>
+
     <div class="max-w-4xl mx-auto px-6 py-12">
-        <h1 class="text-4xl font-semibold mb-8">📥 Your Inbox</h1>
-        <div id="inbox-list" class="space-y-4"></div>
+        <h1 class="text-4xl font-semibold mb-8 flex items-center gap-x-3">
+            📥 Your Inbox
+        </h1>
+        <div id="inbox-list" class="space-y-6"></div>
     </div>
-    
+
     <script>
-        function renderInbox() {
+        const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';   // ← REPLACE
+        const SUPABASE_ANON_KEY = 'eyJ...';                           // ← REPLACE
+
+        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+
+        async function loadInbox() {
+            const { data: { user } } = await supabase.auth.getUser();
+            currentUser = user;
+            if (!user) return window.location.href = 'index.html';
+
+            renderAuthButtons();
+
+            const { data: messages } = await supabase
+                .from('messages')
+                .select('*')
+                .or(`from_user.eq.${user.id},to_user.eq.${user.id}`)
+                .order('created_at', { ascending: false });
+
             const container = document.getElementById('inbox-list');
-            const messages = JSON.parse(localStorage.getItem('maidtoclean_messages') || '[]');
-            container.innerHTML = messages.length ? '' : '<p class="text-gray-400 text-center py-12">No messages yet. Your admin will reach out soon!</p>';
-            
+            container.innerHTML = '';
+
+            if (!messages || messages.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-center py-12">No messages yet. Your admin will reach out soon!</p>`;
+                return;
+            }
+
             messages.forEach(msg => {
+                const isFromAdmin = msg.from_user !== user.id;
                 const div = document.createElement('div');
-                div.className = `flex gap-4 p-6 rounded-3xl ${msg.from === 'admin' ? 'bg-amber-50' : 'bg-teal-50'}`;
+                div.className = `flex gap-4 p-6 rounded-3xl ${isFromAdmin ? 'bg-amber-50' : 'bg-teal-50'}`;
                 div.innerHTML = `
                     <div class="flex-1">
-                        <div class="font-medium">${msg.from === 'admin' ? 'Stephanie • Maid To Clean' : 'You'}</div>
+                        <div class="font-medium">${isFromAdmin ? 'Stephanie • Maid To Clean' : 'You'}</div>
                         <p class="mt-1">${msg.text}</p>
-                        <p class="text-xs text-gray-400 mt-3">${new Date(msg.date).toLocaleString()}</p>
+                        <p class="text-xs text-gray-400 mt-3">${new Date(msg.created_at).toLocaleString()}</p>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
-        window.onload = renderInbox;
+
+        function renderAuthButtons() {
+            const container = document.getElementById('auth-buttons');
+            container.innerHTML = `
+                <span class="text-sm font-medium">👋 ${currentUser.email}</span>
+                <button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>
+            `;
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        window.onload = loadInbox;
     </script>
 </body>
 </html>
