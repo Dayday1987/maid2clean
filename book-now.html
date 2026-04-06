@@ -29,6 +29,11 @@
                 <a href="services.html">Services</a>
                 <a href="dashboard.html">Dashboard</a>
                 <a href="messages.html">Messages</a>
+                <span id="admin-link" class="hidden">
+                    <a href="admin.html" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
+                        <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
+                    </a>
+                </span>
             </div>
             <div id="auth-buttons" class="flex items-center gap-x-3"></div>
         </div>
@@ -166,7 +171,9 @@
             } else {
                 statusEl.innerHTML = `🔑 Booking as guest. You’ll get a confirmation email.`;
             }
+
             renderAuthButtons();
+            checkIfAdmin();
         }
 
         function renderAuthButtons() {
@@ -174,6 +181,13 @@
             container.innerHTML = currentUser 
                 ? `<span class="text-sm font-medium">👋 ${currentUser.email}</span><button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>`
                 : `<button onclick="window.location.href='index.html'" class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl text-sm font-semibold">Login / Sign Up</button>`;
+        }
+
+        async function checkIfAdmin() {
+            const { data: profile } = await supabase.from('profiles').select('role').eq('id', currentUser?.id).single();
+            if (profile && profile.role === 'admin') {
+                document.getElementById('admin-link').classList.remove('hidden');
+            }
         }
 
         function setBookingType(type) {
@@ -219,7 +233,6 @@
                 if (!guestEmail) return alert('Please enter your email for guest booking');
             }
 
-            // Save to Supabase
             await supabase.from('bookings').insert({
                 user_id: currentUser ? currentUser.id : null,
                 service_type: serviceType,
@@ -232,7 +245,6 @@
                 status: 'confirmed'
             });
 
-            // Show success
             const modal = document.getElementById('success-modal');
             const text = document.getElementById('success-text');
             text.textContent = currentUser 
