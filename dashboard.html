@@ -54,11 +54,14 @@
             <div id="history-list" class="bg-white rounded-3xl shadow overflow-hidden"></div>
         </div>
 
-        <!-- QUICK MESSAGE -->
+        <!-- CONTACT SUPPORT (replaces old message box) -->
         <div class="bg-white rounded-3xl p-8 shadow mb-12">
-            <h3 class="font-semibold flex items-center gap-x-2 mb-6"><i class="fa-solid fa-paper-plane"></i> Quick Message to Team</h3>
-            <textarea id="quick-message" rows="3" class="w-full border rounded-3xl px-6 py-4" placeholder="Need to reschedule or add notes?"></textarea>
-            <button onclick="sendQuickMessage()" class="mt-4 px-8 py-4 bg-teal-500 text-white rounded-3xl font-medium">Send Message</button>
+            <h3 class="font-semibold flex items-center gap-x-2 mb-6"><i class="fa-solid fa-envelope"></i> Need to Contact Us?</h3>
+            <p class="text-gray-600 mb-6">For any changes, questions, or special requests, please email our support team.</p>
+            <a href="mailto:stephanie.maidtoclean@gmail.com" 
+               class="inline-flex items-center gap-x-3 bg-teal-500 text-white px-8 py-4 rounded-3xl font-medium">
+                📧 Email Support
+            </a>
         </div>
 
         <!-- STATS -->
@@ -79,7 +82,6 @@
     </div>
 
     <script>
-        // ====================== YOUR REAL KEYS ======================
         const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
 
@@ -96,12 +98,6 @@
 
             renderAuthButtons();
             await loadBookings();
-
-            // Check if admin
-            const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-            if (profile && profile.role === 'admin') {
-                document.getElementById('admin-btn').classList.remove('hidden');
-            }
         }
 
         function renderAuthButtons() {
@@ -150,27 +146,12 @@
             document.getElementById('upcoming-list').innerHTML = upcomingHTML || 
                 `<p class="text-gray-400 py-8 text-center">No upcoming cleanings yet.<br><a href="book-now.html" class="text-teal-500 underline">Book your first cleaning →</a></p>`;
 
-            // Simple history display
             document.getElementById('history-list').innerHTML = bookings && bookings.length > 0 
-                ? `<div class="p-8 text-gray-500">You have ${bookings.length} bookings total.</div>` 
-                : `<p class="p-12 text-center text-gray-400">No bookings yet. Book your first cleaning!</p>`;
+                ? `<div class="p-8">You have ${bookings.length} total bookings.</div>` 
+                : `<p class="p-12 text-center text-gray-400">No bookings yet.</p>`;
 
             document.getElementById('total-cleanings').textContent = totalCleanings;
             document.getElementById('total-spent').textContent = '$' + totalSpent;
-        }
-
-        async function sendQuickMessage() {
-            const text = document.getElementById('quick-message').value.trim();
-            if (!text) return alert("Please type a message");
-
-            await supabase.from('messages').insert({
-                from_user: currentUser.id,
-                to_user: null,
-                text: text
-            });
-
-            alert("✅ Message sent to the team!");
-            document.getElementById('quick-message').value = '';
         }
 
         async function logout() {
