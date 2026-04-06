@@ -15,7 +15,7 @@
 </head>
 <body class="tail-container">
 
-    <!-- NAVBAR (same as index.html) -->
+    <!-- NAVBAR -->
     <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
@@ -34,46 +34,58 @@
     </nav>
 
     <div class="max-w-7xl mx-auto px-6 py-12">
-        <div class="flex justify-between items-center mb-8">
+        <div class="flex justify-between items-start mb-10">
             <div>
-                <h1 class="text-4xl font-semibold">Welcome back, <span id="user-name">Customer</span> 👋</h1>
-                <p class="text-teal-600" id="next-booking"></p>
+                <h1 class="text-5xl font-semibold">Welcome back, <span id="user-name">Customer</span> 👋</h1>
+                <p id="user-email" class="text-gray-500"></p>
             </div>
-            <button onclick="showAdminPanel()" id="admin-btn" class="hidden px-6 py-3 bg-amber-500 text-white rounded-3xl font-semibold flex items-center gap-x-2">
+            <button onclick="showAdminPanel()" id="admin-btn" class="hidden px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl font-semibold flex items-center gap-x-2">
                 <i class="fa-solid fa-shield-halved"></i> Admin Panel
             </button>
         </div>
 
-        <!-- Message Compose Box -->
-        <div class="bg-white rounded-3xl p-8 shadow mb-12">
-            <h3 class="font-semibold flex items-center gap-x-2 mb-6"><i class="fa-solid fa-paper-plane"></i> Message the team</h3>
-            <textarea id="customer-message-input" rows="3" class="w-full border rounded-3xl px-6 py-4 focus:outline-none" placeholder="Need to reschedule, add notes, or ask a question?"></textarea>
-            <button onclick="sendCustomerMessage()" class="mt-4 px-8 py-4 bg-teal-500 text-white rounded-3xl font-medium">Send message to admin</button>
+        <!-- UPCOMING BOOKINGS -->
+        <div class="mb-12">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-x-2"><i class="fa-solid fa-calendar"></i> Upcoming Cleanings</h2>
+            <div id="upcoming-list" class="space-y-4"></div>
         </div>
 
-        <!-- Dashboard Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white rounded-3xl p-8">
-                <h4 class="text-sm font-medium text-gray-500">UPCOMING CLEANING</h4>
-                <div id="upcoming-card" class="mt-4 text-xl font-semibold">No upcoming bookings</div>
+        <!-- BOOKING HISTORY -->
+        <div class="mb-12">
+            <h2 class="text-xl font-semibold mb-4">Booking History</h2>
+            <div id="history-list" class="bg-white rounded-3xl shadow overflow-hidden"></div>
+        </div>
+
+        <!-- QUICK MESSAGE BOX -->
+        <div class="bg-white rounded-3xl p-8 shadow mb-12">
+            <h3 class="font-semibold flex items-center gap-x-2 mb-6"><i class="fa-solid fa-paper-plane"></i> Quick Message to Team</h3>
+            <textarea id="quick-message" rows="3" class="w-full border rounded-3xl px-6 py-4" placeholder="Need to reschedule or add notes?"></textarea>
+            <button onclick="sendQuickMessage()" class="mt-4 px-8 py-4 bg-teal-500 text-white rounded-3xl font-medium">Send Message</button>
+        </div>
+
+        <!-- STATS ROW -->
+        <div class="grid grid-cols-3 gap-6">
+            <div class="bg-white rounded-3xl p-8 text-center">
+                <div class="text-sm text-gray-500">Total Cleanings</div>
+                <div id="total-cleanings" class="text-6xl font-semibold text-teal-500 mt-2">0</div>
             </div>
-            <div class="bg-white rounded-3xl p-8">
-                <h4 class="text-sm font-medium text-gray-500">PAST CLEANINGS</h4>
-                <div id="past-count" class="mt-4 text-5xl font-semibold text-teal-500">0</div>
+            <div class="bg-white rounded-3xl p-8 text-center">
+                <div class="text-sm text-gray-500">Total Spent</div>
+                <div id="total-spent" class="text-6xl font-semibold text-teal-500 mt-2">$0</div>
             </div>
-            <div class="bg-white rounded-3xl p-8">
-                <h4 class="text-sm font-medium text-gray-500">LOYALTY POINTS</h4>
-                <div class="mt-4 text-5xl font-semibold">240</div>
+            <div class="bg-white rounded-3xl p-8 text-center">
+                <div class="text-sm text-gray-500">Loyalty Points</div>
+                <div class="text-6xl font-semibold text-teal-500 mt-2">240</div>
             </div>
         </div>
     </div>
 
     <script>
+        // ====================== YOUR KEYS ======================
         const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';   // ← REPLACE
         const SUPABASE_ANON_KEY = 'eyJ...';                           // ← REPLACE
 
         const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
         let currentUser = null;
 
         async function loadDashboard() {
@@ -81,17 +93,18 @@
             currentUser = user;
             if (!user) return window.location.href = 'index.html';
 
-            // Show user name
             document.getElementById('user-name').textContent = user.email.split('@')[0];
+            document.getElementById('user-email').textContent = user.email;
 
-            // Show admin button if user is admin
+            renderAuthButtons();
+
+            // Check if admin
             const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
             if (profile && profile.role === 'admin') {
                 document.getElementById('admin-btn').classList.remove('hidden');
             }
 
-            renderAuthButtons();
-            loadUpcomingBooking();
+            await loadBookings();
         }
 
         function renderAuthButtons() {
@@ -102,35 +115,106 @@
             `;
         }
 
-        async function loadUpcomingBooking() {
-            // You can expand this later with real bookings
-            document.getElementById('upcoming-card').innerHTML = `
-                <div class="text-teal-600">April 12 • 9:00 AM</div>
-                <div class="text-sm text-gray-500">Standard Residential Cleaning • $129</div>
-            `;
+        async function loadBookings() {
+            const { data: bookings, error } = await supabase
+                .from('bookings')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('date', { ascending: false });
+
+            if (error) console.error(error);
+
+            let upcomingHTML = '';
+            let historyHTML = `
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="text-left p-6 font-medium">Date</th>
+                            <th class="text-left p-6 font-medium">Service</th>
+                            <th class="text-left p-6 font-medium">Amount</th>
+                            <th class="text-left p-6 font-medium">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body"></tbody>
+                </table>`;
+
+            let totalCleanings = 0;
+            let totalSpent = 0;
+
+            const today = new Date();
+
+            bookings?.forEach(booking => {
+                const bookingDate = new Date(booking.date);
+                const isUpcoming = bookingDate >= today && booking.status === 'confirmed';
+
+                totalCleanings++;
+                totalSpent += booking.amount || 0;
+
+                if (isUpcoming) {
+                    upcomingHTML += `
+                        <div class="bg-white border border-teal-200 rounded-3xl p-6 flex justify-between items-center">
+                            <div>
+                                <div class="text-teal-600 font-semibold">${booking.date} • ${booking.time}</div>
+                                <div class="text-xl">${booking.service_type}</div>
+                                <div class="text-sm text-gray-500">${booking.address || 'Montgomery, AL'}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-semibold">$${booking.amount}</div>
+                                <div class="text-xs uppercase tracking-widest bg-teal-100 text-teal-700 px-4 py-1 rounded-3xl inline-block">Confirmed</div>
+                            </div>
+                        </div>`;
+                } else {
+                    // Add to history table
+                    const tbody = document.getElementById('history-body') || document.createElement('tbody');
+                    if (!document.getElementById('history-body')) {
+                        const table = document.createElement('table');
+                        // (table already in historyHTML)
+                    }
+                    const row = document.createElement('tr');
+                    row.className = "border-t";
+                    row.innerHTML = `
+                        <td class="p-6">${booking.date}</td>
+                        <td class="p-6">${booking.service_type}</td>
+                        <td class="p-6 font-medium">$${booking.amount}</td>
+                        <td class="p-6"><span class="px-4 py-1 text-xs rounded-3xl bg-green-100 text-green-700">${booking.status}</span></td>
+                    `;
+                    document.getElementById('history-body').appendChild(row);
+                }
+            });
+
+            // Render upcoming
+            document.getElementById('upcoming-list').innerHTML = upcomingHTML || `<p class="text-gray-400 py-8 text-center">No upcoming cleanings yet.<br><a href="book-now.html" class="text-teal-500 underline">Book your first cleaning →</a></p>`;
+
+            // Render history
+            if (bookings && bookings.length > 0) {
+                document.getElementById('history-list').innerHTML = historyHTML;
+            } else {
+                document.getElementById('history-list').innerHTML = `<p class="p-12 text-center text-gray-400">No bookings yet. Book your first cleaning above!</p>`;
+            }
+
+            document.getElementById('total-cleanings').textContent = totalCleanings;
+            document.getElementById('total-spent').textContent = '$' + totalSpent;
         }
 
-        async function sendCustomerMessage() {
-            const text = document.getElementById('customer-message-input').value.trim();
-            if (!text) return alert('Type a message first');
+        async function sendQuickMessage() {
+            const text = document.getElementById('quick-message').value.trim();
+            if (!text) return alert("Please type a message");
 
             const { error } = await supabase.from('messages').insert({
                 from_user: currentUser.id,
-                to_user: null, // admin will see all
+                to_user: null,
                 text: text
             });
 
             if (error) alert(error.message);
             else {
-                alert('✅ Message sent to admin!');
-                document.getElementById('customer-message-input').value = '';
+                alert("✅ Message sent to the team!");
+                document.getElementById('quick-message').value = '';
             }
         }
 
         function showAdminPanel() {
-            // Same admin panel as before but now uses real Supabase
-            // (full code is long — I'll send a separate admin-only version if you want)
-            alert('👩‍💼 Admin Panel coming in next update. For now use index.html navbar.');
+            alert("👩‍💼 Full Admin Panel is ready in the next update.\n\nFor now you can use the announcement & messaging features from the navbar on index.html.");
         }
 
         async function logout() {
