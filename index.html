@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maid To Clean | Montgomery's Premier Cleaning Service</title>
+    <title>Maid 2 Clean | Montgomery's Premier Cleaning Service</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -27,7 +27,7 @@
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
                 <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
-                <h1 class="text-3xl font-semibold text-gray-900">Maid To Clean</h1>
+                <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
             </div>
             <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
                 <a href="index.html" class="hover:text-teal-500">Home</a>
@@ -49,7 +49,7 @@
     <header class="hero-bg text-white py-24">
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
             <div>
-                <h2 class="text-6xl md:text-7xl font-semibold leading-none mb-6">Your home deserves<br>the Maid To Clean touch</h2>
+                <h2 class="text-6xl md:text-7xl font-semibold leading-none mb-6">Your home deserves<br>the Maid 2 Clean touch</h2>
                 <p class="text-xl md:text-2xl mb-10 max-w-lg">Professional, reliable, and sparkling clean. Book in minutes.</p>
                 <a href="book-now.html" class="inline-flex items-center gap-x-3 bg-white text-teal-600 hover:bg-teal-50 px-10 py-5 rounded-3xl text-xl font-semibold shadow-lg">
                     Book Now <i class="fa-solid fa-arrow-right"></i>
@@ -63,13 +63,13 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-white rounded-3xl p-8 card-hover">
-                    <img src="images/kitchen.webp" class="w-full h-48 object-cover rounded-3xl mb-6" alt="Residential">
+                    <img src="images/bathroom.webp" class="w-full h-48 object-cover rounded-3xl mb-6" alt="Residential">
                     <h4 class="text-2xl font-semibold mb-2">Residential Cleaning</h4>
                     <p class="text-gray-600 mb-6">Weekly, bi-weekly, or one-time home cleaning.</p>
                     <a href="book-now.html" class="text-teal-500 font-medium">Book →</a>
                 </div>
                 <div class="bg-white rounded-3xl p-8 card-hover">
-                    <img src="/images/deep-clean.webp" class="w-full h-48 object-cover rounded-3xl mb-6" alt="Deep Cleaning">
+                    <img src="images/deep-clean.webp" class="w-full h-48 object-cover rounded-3xl mb-6" alt="Deep Cleaning">
                     <h4 class="text-2xl font-semibold mb-2">Deep Cleaning</h4>
                     <p class="text-gray-600 mb-6">Spring cleaning, move-in/move-out, post-renovation.</p>
                     <a href="book-now.html" class="text-teal-500 font-medium">Book →</a>
@@ -110,7 +110,7 @@
             <div class="md:col-span-4">
                 <div class="flex items-center gap-x-3 text-white mb-6">
                     <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-3xl">🧼</div>
-                    <h1 class="text-4xl font-semibold">Maid To Clean</h1>
+                    <h1 class="text-4xl font-semibold">Maid 2 Clean</h1>
                 </div>
                 <p class="text-gray-400">Professional cleaning services you can trust.</p>
             </div>
@@ -126,12 +126,10 @@
     </footer>
 
     <script>
-        // ====================== YOUR REAL KEYS ======================
         const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
 
         const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
         let currentUser = null;
 
         async function loadUser() {
