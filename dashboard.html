@@ -34,17 +34,15 @@
     </nav>
 
     <div class="max-w-7xl mx-auto px-6 py-12">
-        <div class="flex justify-between items-start mb-10">
+        <div class="flex items-center gap-x-6 mb-10">
+            <img src="images/desk.webp" class="w-20 h-20 rounded-3xl object-cover shadow">
             <div>
                 <h1 class="text-5xl font-semibold">Welcome back, <span id="user-name">Customer</span> 👋</h1>
                 <p id="user-email" class="text-gray-500"></p>
             </div>
-            <button onclick="showAdminPanel()" id="admin-btn" class="hidden px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl font-semibold flex items-center gap-x-2">
-                <i class="fa-solid fa-shield-halved"></i> Admin Panel
-            </button>
         </div>
 
-        <!-- UPCOMING BOOKINGS -->
+        <!-- UPCOMING CLEANINGS -->
         <div class="mb-12">
             <h2 class="text-xl font-semibold mb-4 flex items-center gap-x-2"><i class="fa-solid fa-calendar"></i> Upcoming Cleanings</h2>
             <div id="upcoming-list" class="space-y-4"></div>
@@ -56,14 +54,14 @@
             <div id="history-list" class="bg-white rounded-3xl shadow overflow-hidden"></div>
         </div>
 
-        <!-- QUICK MESSAGE BOX -->
+        <!-- QUICK MESSAGE -->
         <div class="bg-white rounded-3xl p-8 shadow mb-12">
             <h3 class="font-semibold flex items-center gap-x-2 mb-6"><i class="fa-solid fa-paper-plane"></i> Quick Message to Team</h3>
             <textarea id="quick-message" rows="3" class="w-full border rounded-3xl px-6 py-4" placeholder="Need to reschedule or add notes?"></textarea>
             <button onclick="sendQuickMessage()" class="mt-4 px-8 py-4 bg-teal-500 text-white rounded-3xl font-medium">Send Message</button>
         </div>
 
-        <!-- STATS ROW -->
+        <!-- STATS -->
         <div class="grid grid-cols-3 gap-6">
             <div class="bg-white rounded-3xl p-8 text-center">
                 <div class="text-sm text-gray-500">Total Cleanings</div>
@@ -81,9 +79,9 @@
     </div>
 
     <script>
-        // ====================== YOUR KEYS ======================
-        const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';   // ← REPLACE
-        const SUPABASE_ANON_KEY = 'eyJ...';                           // ← REPLACE
+        // ====================== YOUR REAL KEYS ======================
+        const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
 
         const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentUser = null;
@@ -97,14 +95,13 @@
             document.getElementById('user-email').textContent = user.email;
 
             renderAuthButtons();
+            await loadBookings();
 
             // Check if admin
             const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
             if (profile && profile.role === 'admin') {
                 document.getElementById('admin-btn').classList.remove('hidden');
             }
-
-            await loadBookings();
         }
 
         function renderAuthButtons() {
@@ -116,39 +113,24 @@
         }
 
         async function loadBookings() {
-            const { data: bookings, error } = await supabase
+            const { data: bookings } = await supabase
                 .from('bookings')
                 .select('*')
                 .eq('user_id', currentUser.id)
                 .order('date', { ascending: false });
 
-            if (error) console.error(error);
-
             let upcomingHTML = '';
-            let historyHTML = `
-                <table class="w-full">
-                    <thead>
-                        <tr class="bg-gray-50">
-                            <th class="text-left p-6 font-medium">Date</th>
-                            <th class="text-left p-6 font-medium">Service</th>
-                            <th class="text-left p-6 font-medium">Amount</th>
-                            <th class="text-left p-6 font-medium">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-body"></tbody>
-                </table>`;
-
             let totalCleanings = 0;
             let totalSpent = 0;
 
             const today = new Date();
 
             bookings?.forEach(booking => {
-                const bookingDate = new Date(booking.date);
-                const isUpcoming = bookingDate >= today && booking.status === 'confirmed';
-
                 totalCleanings++;
                 totalSpent += booking.amount || 0;
+
+                const bookingDate = new Date(booking.date);
+                const isUpcoming = bookingDate >= today && booking.status === 'confirmed';
 
                 if (isUpcoming) {
                     upcomingHTML += `
@@ -156,41 +138,22 @@
                             <div>
                                 <div class="text-teal-600 font-semibold">${booking.date} • ${booking.time}</div>
                                 <div class="text-xl">${booking.service_type}</div>
-                                <div class="text-sm text-gray-500">${booking.address || 'Montgomery, AL'}</div>
                             </div>
                             <div class="text-right">
                                 <div class="text-3xl font-semibold">$${booking.amount}</div>
-                                <div class="text-xs uppercase tracking-widest bg-teal-100 text-teal-700 px-4 py-1 rounded-3xl inline-block">Confirmed</div>
+                                <div class="text-xs uppercase tracking-widest bg-teal-100 text-teal-700 px-4 py-1 rounded-3xl">Confirmed</div>
                             </div>
                         </div>`;
-                } else {
-                    // Add to history table
-                    const tbody = document.getElementById('history-body') || document.createElement('tbody');
-                    if (!document.getElementById('history-body')) {
-                        const table = document.createElement('table');
-                        // (table already in historyHTML)
-                    }
-                    const row = document.createElement('tr');
-                    row.className = "border-t";
-                    row.innerHTML = `
-                        <td class="p-6">${booking.date}</td>
-                        <td class="p-6">${booking.service_type}</td>
-                        <td class="p-6 font-medium">$${booking.amount}</td>
-                        <td class="p-6"><span class="px-4 py-1 text-xs rounded-3xl bg-green-100 text-green-700">${booking.status}</span></td>
-                    `;
-                    document.getElementById('history-body').appendChild(row);
                 }
             });
 
-            // Render upcoming
-            document.getElementById('upcoming-list').innerHTML = upcomingHTML || `<p class="text-gray-400 py-8 text-center">No upcoming cleanings yet.<br><a href="book-now.html" class="text-teal-500 underline">Book your first cleaning →</a></p>`;
+            document.getElementById('upcoming-list').innerHTML = upcomingHTML || 
+                `<p class="text-gray-400 py-8 text-center">No upcoming cleanings yet.<br><a href="book-now.html" class="text-teal-500 underline">Book your first cleaning →</a></p>`;
 
-            // Render history
-            if (bookings && bookings.length > 0) {
-                document.getElementById('history-list').innerHTML = historyHTML;
-            } else {
-                document.getElementById('history-list').innerHTML = `<p class="p-12 text-center text-gray-400">No bookings yet. Book your first cleaning above!</p>`;
-            }
+            // Simple history display
+            document.getElementById('history-list').innerHTML = bookings && bookings.length > 0 
+                ? `<div class="p-8 text-gray-500">You have ${bookings.length} bookings total.</div>` 
+                : `<p class="p-12 text-center text-gray-400">No bookings yet. Book your first cleaning!</p>`;
 
             document.getElementById('total-cleanings').textContent = totalCleanings;
             document.getElementById('total-spent').textContent = '$' + totalSpent;
@@ -200,21 +163,14 @@
             const text = document.getElementById('quick-message').value.trim();
             if (!text) return alert("Please type a message");
 
-            const { error } = await supabase.from('messages').insert({
+            await supabase.from('messages').insert({
                 from_user: currentUser.id,
                 to_user: null,
                 text: text
             });
 
-            if (error) alert(error.message);
-            else {
-                alert("✅ Message sent to the team!");
-                document.getElementById('quick-message').value = '';
-            }
-        }
-
-        function showAdminPanel() {
-            alert("👩‍💼 Full Admin Panel is ready in the next update.\n\nFor now you can use the announcement & messaging features from the navbar on index.html.");
+            alert("✅ Message sent to the team!");
+            document.getElementById('quick-message').value = '';
         }
 
         async function logout() {
