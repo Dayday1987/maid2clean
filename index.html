@@ -151,10 +151,12 @@
         const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentUser = null;
 
-        // Mobile Menu Function - defined FIRST
+        // Mobile Menu Function - Defined FIRST so onclick can find it
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
-            if (menu) menu.classList.toggle('hidden');
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
         }
 
         async function loadUser() {
