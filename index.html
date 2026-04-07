@@ -143,56 +143,57 @@
     </footer>
 
     <script>
-        // ====================== YOUR KEYS ======================
-        const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
+    // ====================== YOUR KEYS ======================
+    const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
 
-        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let currentUser = null;
+    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let currentUser = null;
 
-        // Mobile Menu - Defined FIRST with event listener
-        function setupMobileMenu() {
-            const hamburger = document.getElementById('hamburger');
-            const menu = document.getElementById('mobile-menu');
-            if (hamburger && menu) {
-                hamburger.addEventListener('click', () => {
-                    menu.classList.toggle('hidden');
-                });
-            }
+    // Mobile Menu - using event listener (most reliable on mobile)
+    function setupMobileMenu() {
+        const btn = document.getElementById('hamburger-btn');
+        const menu = document.getElementById('mobile-menu');
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
         }
+    }
 
-        async function loadUser() {
-            const { data: { user } } = await supabase.auth.getUser();
-            currentUser = user;
-            renderAuthButtons();
-            if (user) checkIfAdmin();
+    async function loadUser() {
+        const { data: { user } } = await supabase.auth.getUser();
+        currentUser = user;
+        renderAuthButtons();
+        if (user) checkIfAdmin();
+    }
+
+    function renderAuthButtons() {
+        const container = document.getElementById('auth-buttons');
+        if (currentUser) {
+            container.innerHTML = `<span class="text-sm font-medium">👋 ${currentUser.email}</span><button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>`;
+        } else {
+            container.innerHTML = `<button onclick="window.location.href='index.html'" class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl text-sm font-semibold">Login / Sign Up</button>`;
         }
+    }
 
-        function renderAuthButtons() {
-            const container = document.getElementById('auth-buttons');
-            if (currentUser) {
-                container.innerHTML = `<span class="text-sm font-medium">👋 ${currentUser.email}</span><button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>`;
-            } else {
-                container.innerHTML = `<button onclick="window.location.href='index.html'" class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl text-sm font-semibold">Login / Sign Up</button>`;
-            }
+    async function checkIfAdmin() {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
+        if (profile && profile.role === 'admin') {
+            document.getElementById('admin-link').classList.remove('hidden');
         }
+    }
 
-        async function checkIfAdmin() {
-            const { data: profile } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
-            if (profile && profile.role === 'admin') {
-                document.getElementById('admin-link').classList.remove('hidden');
-            }
-        }
+    async function logout() {
+        await supabase.auth.signOut();
+        window.location.href = 'index.html';
+    }
 
-        async function logout() {
-            await supabase.auth.signOut();
-            window.location.href = 'index.html';
-        }
-
-        window.onload = function() {
-            setupMobileMenu();
-            loadUser();
-        };
-    </script>
+    // Initialize everything
+    window.onload = function() {
+        setupMobileMenu();
+        loadUser();
+    };
+</script>
 </body>
 </html>
