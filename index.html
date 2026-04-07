@@ -143,57 +143,109 @@
     </footer>
 
     <script>
-    // ====================== YOUR KEYS ======================
-    const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
+const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_KEY_HERE';
 
-    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    let currentUser = null;
+// ✅ FIXED SUPABASE INIT
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Mobile Menu - using event listener (most reliable on mobile)
-    function setupMobileMenu() {
-        const btn = document.getElementById('hamburger-btn');
-        const menu = document.getElementById('mobile-menu');
-        if (btn && menu) {
-            btn.addEventListener('click', () => {
-                menu.classList.toggle('hidden');
-            });
-        }
+let currentUser = null;
+
+// ================= MOBILE MENU =================
+function setupMobileMenu() {
+    const btn = document.getElementById('hamburger-btn');
+    const menu = document.getElementById('mobile-menu');
+    const backdrop = document.getElementById('mobile-backdrop');
+
+    if (!btn || !menu || !backdrop) return;
+
+    function openMenu() {
+        menu.classList.remove('hidden');
+        backdrop.classList.remove('hidden');
+
+        setTimeout(() => {
+            menu.classList.remove('opacity-0', '-translate-y-2');
+            menu.classList.add('opacity-100', 'translate-y-0');
+        }, 10);
     }
 
-    async function loadUser() {
-        const { data: { user } } = await supabase.auth.getUser();
-        currentUser = user;
-        renderAuthButtons();
-        if (user) checkIfAdmin();
+    function closeMenu() {
+        menu.classList.remove('opacity-100', 'translate-y-0');
+        menu.classList.add('opacity-0', '-translate-y-2');
+
+        setTimeout(() => {
+            menu.classList.add('hidden');
+            backdrop.classList.add('hidden');
+        }, 200);
     }
 
-    function renderAuthButtons() {
-        const container = document.getElementById('auth-buttons');
-        if (currentUser) {
-            container.innerHTML = `<span class="text-sm font-medium">👋 ${currentUser.email}</span><button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>`;
+    btn.addEventListener('click', () => {
+        if (menu.classList.contains('hidden')) {
+            openMenu();
         } else {
-            container.innerHTML = `<button onclick="window.location.href='index.html'" class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl text-sm font-semibold">Login / Sign Up</button>`;
+            closeMenu();
         }
-    }
+    });
 
-    async function checkIfAdmin() {
-        const { data: profile } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
-        if (profile && profile.role === 'admin') {
-            document.getElementById('admin-link').classList.remove('hidden');
-        }
-    }
+    backdrop.addEventListener('click', closeMenu);
 
-    async function logout() {
-        await supabase.auth.signOut();
-        window.location.href = 'index.html';
-    }
+    // Auto close when clicking a link
+    menu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
+}
 
-    // Initialize everything
-    window.onload = function() {
-        setupMobileMenu();
-        loadUser();
-    };
+// ================= AUTH =================
+async function loadUser() {
+    const { data: { user } } = await supabase.auth.getUser();
+    currentUser = user;
+    renderAuthButtons();
+    if (user) checkIfAdmin();
+}
+
+function renderAuthButtons() {
+    const container = document.getElementById('auth-buttons');
+    if (!container) return;
+
+    if (currentUser) {
+        container.innerHTML = `
+            <span class="text-sm font-medium">👋 ${currentUser.email}</span>
+            <button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">
+                Logout
+            </button>
+        `;
+    } else {
+        container.innerHTML = `
+            <button onclick="window.location.href='index.html'" 
+                class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl text-sm font-semibold">
+                Login / Sign Up
+            </button>
+        `;
+    }
+}
+
+async function checkIfAdmin() {
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', currentUser.id)
+        .single();
+
+    if (profile && profile.role === 'admin') {
+        document.getElementById('admin-link')?.classList.remove('hidden');
+    }
+}
+
+async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = 'index.html';
+}
+
+// ================= INIT =================
+window.addEventListener('DOMContentLoaded', () => {
+    setupMobileMenu();
+    loadUser();
+});
 </script>
 </body>
 </html>
