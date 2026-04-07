@@ -22,51 +22,46 @@
 </head>
 <body class="tail-container">
 
-    <!-- FIXED NAVBAR -->
-    <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-x-3">
-                <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
-                <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
-            </div>
-
-            <!-- Desktop Menu -->
-            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-                <a href="index.html" class="hover:text-teal-500">Home</a>
-                <a href="book-now.html" class="hover:text-teal-500">Book Now</a>
-                <a href="services.html" class="hover:text-teal-500">Services</a>
-                <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
-                <a href="messages.html" class="hover:text-teal-500">Messages</a>
-                <span id="admin-link" class="hidden">
-                    <a href="admin.html" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
-                        <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
-                    </a>
-                </span>
-            </div>
-
-            <!-- Mobile Hamburger - Simple text version -->
-            <button onclick="toggleMobileMenu()" class="md:hidden text-4xl leading-none text-gray-700">
-                ☰
-            </button>
-
-            <!-- Auth Buttons -->
-            <div id="auth-buttons" class="flex items-center gap-x-3"></div>
+    <!-- FIXED NAVBAR - Hamburger now works -->
+<nav class="bg-white border-b shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-x-3">
+            <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
+            <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
         </div>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t px-6 py-4">
-            <a href="index.html" class="block py-3 text-sm font-medium">Home</a>
-            <a href="book-now.html" class="block py-3 text-sm font-medium">Book Now</a>
-            <a href="services.html" class="block py-3 text-sm font-medium">Services</a>
-            <a href="dashboard.html" class="block py-3 text-sm font-medium">Dashboard</a>
-            <a href="messages.html" class="block py-3 text-sm font-medium">Messages</a>
-            <span id="mobile-admin-link" class="hidden">
-                <a href="admin.html" class="block py-3 text-sm font-medium flex items-center gap-x-2">
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+            <a href="index.html" class="hover:text-teal-500">Home</a>
+            <a href="book-now.html" class="hover:text-teal-500">Book Now</a>
+            <a href="services.html" class="hover:text-teal-500">Services</a>
+            <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
+            <a href="messages.html" class="hover:text-teal-500">Messages</a>
+            <span id="admin-link" class="hidden">
+                <a href="admin.html" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
                     <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
                 </a>
             </span>
         </div>
-    </nav>
+
+        <!-- Mobile Hamburger -->
+        <button onclick="toggleMobileMenu()" class="md:hidden text-4xl leading-none text-gray-700">
+            ☰
+        </button>
+
+        <!-- Auth Buttons -->
+        <div id="auth-buttons" class="flex items-center gap-x-3"></div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t px-6 py-4">
+        <a href="index.html" class="block py-3 text-sm font-medium">Home</a>
+        <a href="book-now.html" class="block py-3 text-sm font-medium">Book Now</a>
+        <a href="services.html" class="block py-3 text-sm font-medium">Services</a>
+        <a href="dashboard.html" class="block py-3 text-sm font-medium">Dashboard</a>
+        <a href="messages.html" class="block py-3 text-sm font-medium">Messages</a>
+    </div>
+</nav>
 
     <!-- HERO -->
     <header class="hero-bg text-white py-24">
