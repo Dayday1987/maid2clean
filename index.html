@@ -45,7 +45,7 @@
             </div>
 
             <!-- Mobile Hamburger -->
-            <button onclick="toggleMobileMenu()" class="md:hidden text-4xl leading-none text-gray-700">
+            <button id="hamburger" class="md:hidden text-4xl leading-none text-gray-700">
                 ☰
             </button>
 
@@ -150,10 +150,15 @@
         const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentUser = null;
 
-        // Mobile Menu Function - Defined FIRST
-        function toggleMobileMenu() {
+        // Mobile Menu - Defined FIRST with event listener
+        function setupMobileMenu() {
+            const hamburger = document.getElementById('hamburger');
             const menu = document.getElementById('mobile-menu');
-            if (menu) menu.classList.toggle('hidden');
+            if (hamburger && menu) {
+                hamburger.addEventListener('click', () => {
+                    menu.classList.toggle('hidden');
+                });
+            }
         }
 
         async function loadUser() {
@@ -184,7 +189,10 @@
             window.location.href = 'index.html';
         }
 
-        window.onload = loadUser;
+        window.onload = function() {
+            setupMobileMenu();
+            loadUser();
+        };
     </script>
 </body>
 </html>
