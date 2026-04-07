@@ -22,7 +22,7 @@
 </head>
 <body class="tail-container">
 
-    <!-- NAVBAR - Fully responsive with mobile hamburger -->
+    <!-- FIXED NAVBAR - Works on mobile -->
 <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <div class="flex items-center gap-x-3">
@@ -49,7 +49,7 @@
             <i class="fa-solid fa-bars"></i>
         </button>
 
-        <!-- Auth buttons -->
+        <!-- Auth Buttons -->
         <div id="auth-buttons" class="flex items-center gap-x-3"></div>
     </div>
 
@@ -184,10 +184,6 @@
         }
 
         window.onload = loadUser;
-        function toggleMobileMenu() {
-    const menu = document.getElementById('mobile-menu');
-    menu.classList.toggle('hidden');
-}
         function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
     menu.classList.toggle('hidden');
