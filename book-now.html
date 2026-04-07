@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Now - Maid To Clean</title>
+    <title>Book Now - Maid 2 Clean</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -17,54 +17,47 @@
 <body class="tail-container">
 
     <!-- NAVBAR -->
-    <!-- NAVBAR - Fully responsive with mobile hamburger -->
-<nav class="bg-white border-b shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-x-3">
-            <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
-            <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
+    <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
+                <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a href="index.html" class="hover:text-teal-500">Home</a>
+                <a href="book-now.html" class="hover:text-teal-500">Book Now</a>
+                <a href="services.html" class="hover:text-teal-500">Services</a>
+                <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
+                <a href="messages.html" class="hover:text-teal-500">Messages</a>
+                <span id="admin-link" class="hidden">
+                    <a href="admin.html" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
+                        <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
+                    </a>
+                </span>
+            </div>
+
+            <!-- Mobile Hamburger -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-4xl leading-none text-gray-700">
+                ☰
+            </button>
+
+            <div id="auth-buttons" class="flex items-center gap-x-3"></div>
         </div>
 
-        <!-- Desktop Menu -->
-        <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-            <a href="index.html" class="hover:text-teal-500">Home</a>
-            <a href="book-now.html" class="hover:text-teal-500">Book Now</a>
-            <a href="services.html" class="hover:text-teal-500">Services</a>
-            <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
-            <a href="messages.html" class="hover:text-teal-500">Messages</a>
-            <span id="admin-link" class="hidden">
-                <a href="admin.html" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
-                    <i class="fa-solid fa-shield-halved"></i> Admin
-                </a>
-            </span>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t px-6 py-4">
+            <a href="index.html" class="block py-3 text-sm font-medium">Home</a>
+            <a href="book-now.html" class="block py-3 text-sm font-medium">Book Now</a>
+            <a href="services.html" class="block py-3 text-sm font-medium">Services</a>
+            <a href="dashboard.html" class="block py-3 text-sm font-medium">Dashboard</a>
+            <a href="messages.html" class="block py-3 text-sm font-medium">Messages</a>
         </div>
-
-        <!-- Mobile Hamburger -->
-        <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-gray-700">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-
-        <!-- Auth buttons -->
-        <div id="auth-buttons" class="flex items-center gap-x-3"></div>
-    </div>
-
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t px-6 py-4">
-        <a href="index.html" class="block py-3 text-sm font-medium">Home</a>
-        <a href="book-now.html" class="block py-3 text-sm font-medium">Book Now</a>
-        <a href="services.html" class="block py-3 text-sm font-medium">Services</a>
-        <a href="dashboard.html" class="block py-3 text-sm font-medium">Dashboard</a>
-        <a href="messages.html" class="block py-3 text-sm font-medium">Messages</a>
-        <span id="mobile-admin-link" class="hidden">
-            <a href="admin.html" class="block py-3 text-sm font-medium flex items-center gap-x-2">
-                <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
-            </a>
-        </span>
-    </div>
-</nav>
+    </nav>
 
     <div class="max-w-3xl mx-auto px-6 py-12">
-        <img src="images/homepage.webp" class="w-full h-64 object-cover rounded-3xl mb-8 shadow-xl">
+        <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/homepage.webp" class="w-full h-64 object-cover rounded-3xl mb-8 shadow-xl">
 
         <h1 class="text-5xl font-semibold text-center mb-2">Book Your Cleaning</h1>
         <p class="text-center text-gray-500 mb-10">Secure • Powered by Stripe</p>
@@ -74,10 +67,8 @@
 
             <!-- Booking Type Toggle -->
             <div class="flex gap-2 mb-8 border-b pb-2">
-                <button onclick="setBookingType('one-time')" id="one-time-btn"
-                        class="flex-1 py-4 rounded-3xl font-semibold bg-teal-500 text-white">One-time Cleaning</button>
-                <button onclick="setBookingType('subscription')" id="subscription-btn"
-                        class="flex-1 py-4 rounded-3xl font-semibold border">Subscription Plan</button>
+                <button onclick="setBookingType('one-time')" id="one-time-btn" class="flex-1 py-4 rounded-3xl font-semibold bg-teal-500 text-white">One-time Cleaning</button>
+                <button onclick="setBookingType('subscription')" id="subscription-btn" class="flex-1 py-4 rounded-3xl font-semibold border">Subscription Plan</button>
             </div>
 
             <!-- Form -->
@@ -184,20 +175,24 @@
         let currentUser = null;
         let bookingType = 'one-time';
 
+        // Mobile Menu Function - Defined FIRST
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
         async function init() {
             const { data: { user } } = await supabase.auth.getUser();
             currentUser = user;
 
             const statusEl = document.getElementById('user-status');
             if (user) {
-                statusEl.innerHTML = `✅ Logged in as <strong>${user.email}</strong> — booking will be saved to your account`;
+                statusEl.innerHTML = `✅ Logged in as <strong>${user.email}</strong>`;
                 document.getElementById('guest-fields').style.display = 'none';
             } else {
                 statusEl.innerHTML = `🔑 Booking as guest. You’ll get a confirmation email.`;
             }
-
             renderAuthButtons();
-            checkIfAdmin();
         }
 
         function renderAuthButtons() {
@@ -205,13 +200,6 @@
             container.innerHTML = currentUser 
                 ? `<span class="text-sm font-medium">👋 ${currentUser.email}</span><button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>`
                 : `<button onclick="window.location.href='index.html'" class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl text-sm font-semibold">Login / Sign Up</button>`;
-        }
-
-        async function checkIfAdmin() {
-            const { data: profile } = await supabase.from('profiles').select('role').eq('id', currentUser?.id).single();
-            if (profile && profile.role === 'admin') {
-                document.getElementById('admin-link').classList.remove('hidden');
-            }
         }
 
         function setBookingType(type) {
@@ -226,10 +214,8 @@
         }
 
         function startPayment(method) {
-            if (method === 'apple_pay' || method === 'google_pay' || method === 'paypal') {
-                alert(`✅ ${method.toUpperCase()} selected! (Demo mode - payment successful)`);
-                completeBooking();
-            }
+            alert(`✅ ${method.toUpperCase()} selected! (Demo mode)`);
+            completeBooking();
         }
 
         function showCardForm() {
@@ -250,13 +236,6 @@
             const time = document.getElementById('booking-time') ? document.getElementById('booking-time').value : 'N/A';
             const address = document.getElementById('address').value || 'Montgomery, AL';
 
-            let guestEmail = null, guestName = null;
-            if (!currentUser) {
-                guestName = document.getElementById('guest-name').value || 'Guest';
-                guestEmail = document.getElementById('guest-email').value;
-                if (!guestEmail) return alert('Please enter your email for guest booking');
-            }
-
             await supabase.from('bookings').insert({
                 user_id: currentUser ? currentUser.id : null,
                 service_type: serviceType,
@@ -264,16 +243,12 @@
                 time: time,
                 amount: bookingType === 'subscription' ? 99 : 129,
                 address: address,
-                guest_email: guestEmail,
-                guest_name: guestName,
                 status: 'confirmed'
             });
 
             const modal = document.getElementById('success-modal');
             const text = document.getElementById('success-text');
-            text.textContent = currentUser 
-                ? `Your ${serviceType} has been booked and saved to your account!` 
-                : `Thank you! Your booking is confirmed. A confirmation was sent to ${guestEmail}.`;
+            text.textContent = currentUser ? `Your ${serviceType} has been booked!` : `Thank you! Your booking is confirmed.`;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
@@ -291,10 +266,6 @@
         }
 
         window.onload = init;
-        function toggleMobileMenu() {
-    const menu = document.getElementById('mobile-menu');
-    menu.classList.toggle('hidden');
-}
     </script>
 </body>
 </html>
