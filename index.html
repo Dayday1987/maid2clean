@@ -49,7 +49,6 @@
                 ☰
             </button>
 
-            <!-- Auth Buttons -->
             <div id="auth-buttons" class="flex items-center gap-x-3"></div>
         </div>
 
@@ -151,12 +150,10 @@
         const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentUser = null;
 
-        // Mobile Menu Function - Defined FIRST so onclick can find it
+        // Mobile Menu Function - Defined FIRST
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
-            if (menu) {
-                menu.classList.toggle('hidden');
-            }
+            if (menu) menu.classList.toggle('hidden');
         }
 
         async function loadUser() {
