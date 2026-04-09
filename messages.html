@@ -38,12 +38,13 @@
         </div>
 
         <!-- Mobile Hamburger -->
-        <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-gray-700">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+        <div class="flex items-center gap-x-3">
+    <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-gray-700">
+        <i class="fa-solid fa-bars"></i>
+    </button>
 
-        <!-- Auth buttons -->
-        <div id="auth-buttons" class="hidden md:flex items-center gap-x-3"></div>
+    <div id="auth-buttons" class="hidden md:flex items-center gap-x-3"></div>
+</div>
 
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-white border-t px-6 py-4">
