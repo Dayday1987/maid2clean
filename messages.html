@@ -15,9 +15,13 @@
 </head>
 <body class="tail-container">
 
-    <!-- NAVBAR - Fully responsive with mobile hamburger -->
+    <!-- NAVBAR -->
 <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
+
+    <!-- TOP BAR -->
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        
+        <!-- Logo -->
         <div class="flex items-center gap-x-3">
             <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
             <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
@@ -31,20 +35,20 @@
             <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
             <a href="messages.html" class="hover:text-teal-500">Messages</a>
             <span id="admin-link" class="hidden">
-                <a href="admin.html" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
-                    <i class="fa-solid fa-shield-halved"></i> Admin
+                <a href="admin.html" class="px-5 py-2 bg-amber-500 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
+                    <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
                 </a>
             </span>
         </div>
 
         <!-- Mobile Hamburger -->
-        <div class="flex items-center gap-x-3">
-    <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-gray-700">
-        <i class="fa-solid fa-bars"></i>
-    </button>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-4xl text-gray-700">
+            ☰
+        </button>
 
-    <div id="auth-buttons" class="hidden md:flex items-center gap-x-3"></div>
-</div>
+        <!-- Auth -->
+        <div id="auth-buttons" class="flex items-center gap-x-3"></div>
+    </div>
 
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-white border-t px-6 py-4">
@@ -53,13 +57,9 @@
         <a href="services.html" class="block py-3 text-sm font-medium">Services</a>
         <a href="dashboard.html" class="block py-3 text-sm font-medium">Dashboard</a>
         <a href="messages.html" class="block py-3 text-sm font-medium">Messages</a>
-        <span id="mobile-admin-link" class="hidden">
-            <a href="admin.html" class="block py-3 text-sm font-medium flex items-center gap-x-2">
-                <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
-            </a>
-        </span>
     </div>
-</nav>
+
+
 
     <div class="max-w-4xl mx-auto px-6 py-12">
         <h1 class="text-4xl font-semibold mb-8">📥 Your Messages & Notifications</h1>
@@ -78,17 +78,12 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ===== MOBILE MENU ===== */
+
 function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
     if (menu) {
         menu.classList.toggle('hidden');
     }
-}
-
-function setupMobileMenu() {
-    const menu = document.getElementById('mobile-menu');
-    if (menu) menu.classList.add('hidden');
 }
 
 /* ===== LOAD MESSAGES ===== */
@@ -122,12 +117,6 @@ async function loadMessages() {
         container.appendChild(div);
     });
 }
-
-/* ===== INIT ===== */
-window.addEventListener('DOMContentLoaded', () => {
-    setupMobileMenu();
-    loadMessages();
-});
 </script>
 </body>
 </html>
