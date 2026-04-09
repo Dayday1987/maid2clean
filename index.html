@@ -24,49 +24,49 @@
 
     <!-- NAVBAR -->
     <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-x-3">
-                <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
-                <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
-            </div>
-
-            <!-- Desktop Menu -->
-            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-                <a href="index.html" class="hover:text-teal-500">Home</a>
-                <a href="book-now.html" class="hover:text-teal-500">Book Now</a>
-                <a href="services.html" class="hover:text-teal-500">Services</a>
-                <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
-                <a href="messages.html" class="hover:text-teal-500">Messages</a>
-                <span id="admin-link" class="hidden">
-                    <a href="admin.html" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
-                        <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
-                    </a>
-                </span>
-            </div>
-
-            <!-- Mobile Hamburger -->
-            <button id="hamburger-btn" class="md:hidden text-4xl leading-none text-gray-700">
-                ☰
-            </button>
-
-            <div id="auth-buttons" class="flex items-center gap-x-3"></div>
+    
+    <!-- TOP BAR -->
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        
+        <!-- Logo -->
+        <div class="flex items-center gap-x-3">
+            <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
+            <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
         </div>
 
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+            <a href="index.html" class="hover:text-teal-500">Home</a>
+            <a href="book-now.html" class="hover:text-teal-500">Book Now</a>
+            <a href="services.html" class="hover:text-teal-500">Services</a>
+            <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
+            <a href="messages.html" class="hover:text-teal-500">Messages</a>
+            <span id="admin-link" class="hidden">
+                <a href="admin.html" class="px-5 py-2 bg-amber-500 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
+                    <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
+                </a>
+            </span>
+        </div>
 
-    <a href="index.html" class="block py-3 text-sm font-medium">Home</a>
-    <a href="book-now.html" class="block py-3 text-sm font-medium">Book Now</a>
-    <a href="services.html" class="block py-3 text-sm font-medium">Services</a>
-    <a href="dashboard.html" class="block py-3 text-sm font-medium">Dashboard</a>
-    <a href="messages.html" class="block py-3 text-sm font-medium">Messages</a>
-</div>
-    </nav>
+        <!-- Mobile Hamburger -->
+        <button onclick="toggleMobileMenu()" class="md:hidden text-4xl text-gray-700">
+            ☰
+        </button>
 
-    <!-- Backdrop -->
-<div id="mobile-backdrop" class="hidden fixed inset-0 bg-black/40 z-40"></div>
+        <!-- Auth -->
+        <div id="auth-buttons" class="flex items-center gap-x-3"></div>
+    </div>
 
-<!-- Mobile Menu -->
-<div id="mobile-menu"
-     class="hidden fixed top-20 left-0 w-full bg-white z-[999] px-6 py-6">
+    <!-- ✅ MOBILE MENU (FIXED) -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t px-6 py-4">
+        <a href="index.html" class="block py-3 text-sm font-medium">Home</a>
+        <a href="book-now.html" class="block py-3 text-sm font-medium">Book Now</a>
+        <a href="services.html" class="block py-3 text-sm font-medium">Services</a>
+        <a href="dashboard.html" class="block py-3 text-sm font-medium">Dashboard</a>
+        <a href="messages.html" class="block py-3 text-sm font-medium">Messages</a>
+    </div>
+
+</nav>
     <!-- HERO -->
     <header class="hero-bg text-white py-24">
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
@@ -147,42 +147,12 @@
         </div>
     </footer>
 <script>
-console.log("CLEAN NAV SCRIPT");
-
-window.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("hamburger-btn");
-    const menu = document.getElementById("mobile-menu");
-    const backdrop = document.getElementById("mobile-backdrop");
-
-    // FORCE CLEAN STATE ON LOAD
-    menu.classList.add("hidden");
-    if (backdrop) backdrop.classList.add("hidden");
-    document.body.style.overflow = "";
-
-    btn.onclick = () => {
-        const isOpen = !menu.classList.contains("hidden");
-
-        if (isOpen) {
-            // CLOSE
-            menu.classList.add("hidden");
-            if (backdrop) backdrop.classList.add("hidden");
-            document.body.style.overflow = "";
-        } else {
-            // OPEN
-            menu.classList.remove("hidden");
-            if (backdrop) backdrop.classList.remove("hidden");
-            document.body.style.overflow = "hidden";
-        }
-    };
-
-    if (backdrop) {
-        backdrop.onclick = () => {
-            menu.classList.add("hidden");
-            backdrop.classList.add("hidden");
-            document.body.style.overflow = "";
-        };
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    if (menu) {
+        menu.classList.toggle('hidden');
     }
-});
+}
 </script>
 
 </body>
