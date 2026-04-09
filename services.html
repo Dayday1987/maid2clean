@@ -13,9 +13,13 @@
 </head>
 <body class="tail-container">
 
-    <!-- NAVBAR - Fully responsive with mobile hamburger -->
+    <!-- NAVBAR -->
 <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
+
+    <!-- TOP BAR -->
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        
+        <!-- Logo -->
         <div class="flex items-center gap-x-3">
             <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
             <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
@@ -29,18 +33,18 @@
             <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
             <a href="messages.html" class="hover:text-teal-500">Messages</a>
             <span id="admin-link" class="hidden">
-                <a href="admin.html" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
-                    <i class="fa-solid fa-shield-halved"></i> Admin
+                <a href="admin.html" class="px-5 py-2 bg-amber-500 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
+                    <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
                 </a>
             </span>
         </div>
 
         <!-- Mobile Hamburger -->
-        <button onclick="toggleMobileMenu()" class="md:hidden text-3xl text-gray-700">
-            <i class="fa-solid fa-bars"></i>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-4xl text-gray-700">
+            ☰
         </button>
 
-        <!-- Auth buttons -->
+        <!-- Auth -->
         <div id="auth-buttons" class="flex items-center gap-x-3"></div>
     </div>
 
@@ -51,12 +55,8 @@
         <a href="services.html" class="block py-3 text-sm font-medium">Services</a>
         <a href="dashboard.html" class="block py-3 text-sm font-medium">Dashboard</a>
         <a href="messages.html" class="block py-3 text-sm font-medium">Messages</a>
-        <span id="mobile-admin-link" class="hidden">
-            <a href="admin.html" class="block py-3 text-sm font-medium flex items-center gap-x-2">
-                <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
-            </a>
-        </span>
     </div>
+
 </nav>
 
     <!-- HERO -->
@@ -177,12 +177,12 @@
     </section>
 
     <script>
-        function toggleMobileMenu() {
+function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
-    menu.classList.toggle('hidden');
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
 }
-        // Same auth script as index.html (you can copy from your current index.html)
-        window.onload = () => console.log('%c✅ Services page loaded', 'color:#00c4b4');
-    </script>
+</script>l
 </body>
 </html>
