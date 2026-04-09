@@ -110,10 +110,14 @@
         }
 
         window.onload = loadMessages;
-        function toggleMobileMenu() {
+        <script>
+function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
-    menu.classList.toggle('hidden');
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
 }
+</script>
     </script>
 </body>
 </html>
