@@ -155,7 +155,7 @@
 
     <script>
 async function loadNavbar() {
-    const res = await fetch('components/navbar.html'); // ✅ fixed path
+    const res = await fetch('components/navbar.html');
     const html = await res.text();
 
     const container = document.getElementById('navbar');
@@ -163,7 +163,6 @@ async function loadNavbar() {
 
     container.innerHTML = html;
 
-    // attach menu behavior AFTER loading
     const btn = document.getElementById("hamburger-btn");
     const menu = document.getElementById("mobile-menu");
 
@@ -173,6 +172,8 @@ async function loadNavbar() {
         });
     }
 }
+
+window.addEventListener("DOMContentLoaded", loadNavbar);
 </script>
 </body>
 </html>
