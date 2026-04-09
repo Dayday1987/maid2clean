@@ -170,108 +170,111 @@
     </div>
 
     <script>
-        // ====================== YOUR REAL KEYS ======================
-        const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
-        const STRIPE_PUBLISHABLE_KEY = 'pk_test_51TJFwZ2MxWcKELxTUlf5FKYkUdVlKWcmfVAcojg9rc1T8tDYzGMy2LyWB6bNFojbmRWHDuLMKTfwNwNsMZfmcIK300XrB93Uk9';
+const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_KEY_HERE';
+const STRIPE_PUBLISHABLE_KEY = 'YOUR_STRIPE_KEY';
 
-        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
-        let elements;
-        let currentUser = null;
-        let bookingType = 'one-time';
+const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+let elements;
+let currentUser = null;
+let bookingType = 'one-time';
 
-        // Mobile Menu Function - Defined FIRST
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            if (menu) menu.classList.toggle('hidden');
+/* ===== MOBILE MENU ===== */
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    if (!menu) return;
+    menu.classList.toggle('hidden');
+}
+
+function setupMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    if (menu) {
+        menu.classList.add('hidden'); // always start closed
+    }
+}
+
+/* ===== AUTH INIT ===== */
+async function init() {
+    const { data: { user } } = await supabase.auth.getUser();
+    currentUser = user;
+
+    const statusEl = document.getElementById('user-status');
+    if (statusEl) {
+        if (user) {
+            statusEl.innerHTML = `✅ Logged in as <strong>${user.email}</strong>`;
+            const guest = document.getElementById('guest-fields');
+            if (guest) guest.style.display = 'none';
+        } else {
+            statusEl.innerHTML = `🔑 Booking as guest.`;
         }
+    }
 
-        async function init() {
-            const { data: { user } } = await supabase.auth.getUser();
-            currentUser = user;
+    renderAuthButtons();
+}
 
-            const statusEl = document.getElementById('user-status');
-            if (user) {
-                statusEl.innerHTML = `✅ Logged in as <strong>${user.email}</strong>`;
-                document.getElementById('guest-fields').style.display = 'none';
-            } else {
-                statusEl.innerHTML = `🔑 Booking as guest. You’ll get a confirmation email.`;
-            }
-            renderAuthButtons();
-        }
+function renderAuthButtons() {
+    const container = document.getElementById('auth-buttons');
+    if (!container) return;
 
-        function renderAuthButtons() {
-            const container = document.getElementById('auth-buttons');
-            container.innerHTML = currentUser 
-                ? `<span class="text-sm font-medium">👋 ${currentUser.email}</span><button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>`
-                : `<button onclick="window.location.href='index.html'" class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl text-sm font-semibold">Login / Sign Up</button>`;
-        }
+    container.innerHTML = currentUser
+        ? `👋 ${currentUser.email} <button onclick="logout()">Logout</button>`
+        : `<button onclick="window.location.href='index.html'">Login</button>`;
+}
 
-        function setBookingType(type) {
-            bookingType = type;
-            document.getElementById('one-time-btn').classList.toggle('bg-teal-500', type === 'one-time');
-            document.getElementById('one-time-btn').classList.toggle('text-white', type === 'one-time');
-            document.getElementById('subscription-btn').classList.toggle('bg-teal-500', type === 'subscription');
-            document.getElementById('subscription-btn').classList.toggle('text-white', type === 'subscription');
+/* ===== BOOKING ===== */
+function setBookingType(type) {
+    bookingType = type;
 
-            document.getElementById('one-time-fields').classList.toggle('hidden', type === 'subscription');
-            document.getElementById('subscription-fields').classList.toggle('hidden', type !== 'subscription');
-        }
+    document.getElementById('one-time-btn')?.classList.toggle('bg-teal-500', type === 'one-time');
+    document.getElementById('subscription-btn')?.classList.toggle('bg-teal-500', type === 'subscription');
 
-        function startPayment(method) {
-            alert(`✅ ${method.toUpperCase()} selected! (Demo mode)`);
-            completeBooking();
-        }
+    document.getElementById('one-time-fields')?.classList.toggle('hidden', type === 'subscription');
+    document.getElementById('subscription-fields')?.classList.toggle('hidden', type !== 'subscription');
+}
 
-        function showCardForm() {
-            document.getElementById('card-container').classList.remove('hidden');
-            elements = stripe.elements();
-            const card = elements.create('card');
-            card.mount('#card-element');
-        }
+function startPayment(method) {
+    alert(`${method} selected`);
+    completeBooking();
+}
 
-        async function processCardPayment() {
-            alert('✅ Card payment successful (demo mode)');
-            completeBooking();
-        }
+function showCardForm() {
+    document.getElementById('card-container')?.classList.remove('hidden');
+    elements = stripe.elements();
+    const card = elements.create('card');
+    card.mount('#card-element');
+}
 
-        async function completeBooking() {
-            const serviceType = document.getElementById('service-type').value;
-            const date = document.getElementById('booking-date') ? document.getElementById('booking-date').value : 'N/A';
-            const time = document.getElementById('booking-time') ? document.getElementById('booking-time').value : 'N/A';
-            const address = document.getElementById('address').value || 'Montgomery, AL';
+async function processCardPayment() {
+    alert('Payment success');
+    completeBooking();
+}
 
-            await supabase.from('bookings').insert({
-                user_id: currentUser ? currentUser.id : null,
-                service_type: serviceType,
-                date: date,
-                time: time,
-                amount: bookingType === 'subscription' ? 99 : 129,
-                address: address,
-                status: 'confirmed'
-            });
+async function completeBooking() {
+    const serviceType = document.getElementById('service-type')?.value || '';
 
-            const modal = document.getElementById('success-modal');
-            const text = document.getElementById('success-text');
-            text.textContent = currentUser ? `Your ${serviceType} has been booked!` : `Thank you! Your booking is confirmed.`;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
+    await supabase.from('bookings').insert({
+        service_type: serviceType,
+        status: 'confirmed'
+    });
 
-        function hideSuccessModal() {
-            const modal = document.getElementById('success-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            if (currentUser) window.location.href = 'dashboard.html';
-        }
+    document.getElementById('success-modal')?.classList.remove('hidden');
+}
 
-        async function logout() {
-            await supabase.auth.signOut();
-            window.location.href = 'index.html';
-        }
+function hideSuccessModal() {
+    document.getElementById('success-modal')?.classList.add('hidden');
+}
 
-        window.onload = init;
-    </script>
+async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = 'index.html';
+}
+
+/* ===== INIT ===== */
+window.onload = () => {
+    setupMobileMenu();
+    init();
+};
+</script>
 </body>
 </html>
