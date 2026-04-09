@@ -151,30 +151,25 @@
    <script>
 console.log("SCRIPT RUNNING ✅");
 
-// FORCE NAVBAR TO WORK
 window.addEventListener("DOMContentLoaded", () => {
     const btn = document.getElementById("hamburger-btn");
     const menu = document.getElementById("mobile-menu");
     const backdrop = document.getElementById("mobile-backdrop");
 
-    if (!btn || !menu) {
-        console.log("Navbar elements missing");
-        return;
-    }
+    if (!btn || !menu) return;
 
     btn.onclick = () => {
-        console.log("CLICK");
-
         menu.classList.toggle("hidden");
-
-        if (backdrop) {
-            backdrop.classList.toggle("hidden");
-        }
+        if (backdrop) backdrop.classList.toggle("hidden");
     };
+
+    if (backdrop) {
+        backdrop.onclick = () => {
+            menu.classList.add("hidden");
+            backdrop.classList.add("hidden");
+        };
+    }
 });
-</script>
-    <script>
-alert("JS IS RUNNING");
 </script>
 </body>
 </html>
