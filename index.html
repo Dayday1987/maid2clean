@@ -148,23 +148,11 @@
         </div>
     </footer>
 
-    <script>
+   <script>
 console.log("SCRIPT RUNNING ✅");
 
-// ===== SUPABASE (SAFE INIT) =====
-const SUPABASE_URL = "https://iyeifutvbcumkrcykbcc.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM";
-
-let supabaseClient = null;
-
-if (window.supabase && window.supabase.createClient)
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} else {
-    console.warn("Supabase not loaded");
-}
-
-// ===== NAVBAR =====
-function setupMobileMenu() {
+// FORCE NAVBAR TO WORK
+window.addEventListener("DOMContentLoaded", () => {
     const btn = document.getElementById("hamburger-btn");
     const menu = document.getElementById("mobile-menu");
     const backdrop = document.getElementById("mobile-backdrop");
@@ -174,37 +162,15 @@ function setupMobileMenu() {
         return;
     }
 
-    btn.addEventListener("click", () => {
-        const isHidden = menu.classList.contains("hidden");
+    btn.onclick = () => {
+        console.log("CLICK");
 
-        if (isHidden) {
-            menu.classList.remove("hidden", "opacity-0", "-translate-y-2");
-            menu.classList.add("opacity-100", "translate-y-0");
+        menu.classList.toggle("hidden");
 
-            if (backdrop) backdrop.classList.remove("hidden");
-        } else {
-            menu.classList.add("opacity-0", "-translate-y-2");
-            menu.classList.remove("opacity-100", "translate-y-0");
-
-            setTimeout(() => {
-                menu.classList.add("hidden");
-            }, 200);
-
-            if (backdrop) backdrop.classList.add("hidden");
+        if (backdrop) {
+            backdrop.classList.toggle("hidden");
         }
-    });
-
-    if (backdrop) {
-        backdrop.addEventListener("click", () => {
-            menu.classList.add("hidden", "opacity-0", "-translate-y-2");
-            backdrop.classList.add("hidden");
-        });
-    }
-}
-
-// ===== INIT =====
-window.addEventListener("DOMContentLoaded", () => {
-    setupMobileMenu();
+    };
 });
 </script>
 </body>
