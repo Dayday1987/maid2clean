@@ -159,9 +159,21 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!btn || !menu) return;
 
     btn.onclick = () => {
-        menu.classList.toggle("hidden");
-        if (backdrop) backdrop.classList.toggle("hidden");
-    };
+    const isHidden = menu.classList.contains("hidden");
+
+    if (isHidden) {
+        // OPEN
+        menu.classList.remove("hidden");
+        backdrop.classList.remove("hidden");
+        document.body.style.overflow = "hidden"; // lock scroll
+    } else {
+        // CLOSE
+        menu.classList.add("hidden");
+        backdrop.classList.add("hidden");
+        document.body.style.overflow = ""; // restore scroll
+        
+    }
+};
 
     if (backdrop) {
         backdrop.onclick = () => {
