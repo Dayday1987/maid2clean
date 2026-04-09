@@ -155,10 +155,9 @@ console.log("SCRIPT RUNNING ✅");
 const SUPABASE_URL = "https://iyeifutvbcumkrcykbcc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM";
 
-// Prevent crash if Supabase fails
 let supabaseClient = null;
 
-if (window.supabase && window.supabase.createClient) {
+if (window.supabase && window.supabase.createClient) {we
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 } else {
     console.warn("Supabase not loaded");
@@ -176,25 +175,31 @@ function setupMobileMenu() {
     }
 
     btn.addEventListener("click", () => {
-    const isHidden = menu.classList.contains("hidden");
+        const isHidden = menu.classList.contains("hidden");
 
-    if (isHidden) {
-        menu.classList.remove("hidden");
-        menu.classList.remove("opacity-0", "-translate-y-2");
-        menu.classList.add("opacity-100", "translate-y-0");
+        if (isHidden) {
+            menu.classList.remove("hidden", "opacity-0", "-translate-y-2");
+            menu.classList.add("opacity-100", "translate-y-0");
 
-        backdrop.classList.remove("hidden");
-    } else {
-        menu.classList.add("opacity-0", "-translate-y-2");
-        menu.classList.remove("opacity-100", "translate-y-0");
+            if (backdrop) backdrop.classList.remove("hidden");
+        } else {
+            menu.classList.add("opacity-0", "-translate-y-2");
+            menu.classList.remove("opacity-100", "translate-y-0");
 
-        setTimeout(() => {
-            menu.classList.add("hidden");
-        }, 200);
+            setTimeout(() => {
+                menu.classList.add("hidden");
+            }, 200);
 
-        backdrop.classList.add("hidden");
+            if (backdrop) backdrop.classList.add("hidden");
+        }
+    });
+
+    if (backdrop) {
+        backdrop.addEventListener("click", () => {
+            menu.classList.add("hidden", "opacity-0", "-translate-y-2");
+            backdrop.classList.add("hidden");
+        });
     }
-});
 }
 
 // ===== INIT =====
