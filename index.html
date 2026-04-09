@@ -176,21 +176,25 @@ function setupMobileMenu() {
     }
 
     btn.addEventListener("click", () => {
-        console.log("CLICK"); // debug
+    const isHidden = menu.classList.contains("hidden");
 
-        menu.classList.toggle("hidden");
+    if (isHidden) {
+        menu.classList.remove("hidden");
+        menu.classList.remove("opacity-0", "-translate-y-2");
+        menu.classList.add("opacity-100", "translate-y-0");
 
-        if (backdrop) {
-            backdrop.classList.toggle("hidden");
-        }
-    });
+        backdrop.classList.remove("hidden");
+    } else {
+        menu.classList.add("opacity-0", "-translate-y-2");
+        menu.classList.remove("opacity-100", "translate-y-0");
 
-    if (backdrop) {
-        backdrop.addEventListener("click", () => {
+        setTimeout(() => {
             menu.classList.add("hidden");
-            backdrop.classList.add("hidden");
-        });
+        }, 200);
+
+        backdrop.classList.add("hidden");
     }
+});
 }
 
 // ===== INIT =====
