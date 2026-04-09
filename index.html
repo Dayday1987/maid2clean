@@ -65,9 +65,8 @@
 <div id="mobile-backdrop" class="hidden fixed inset-0 bg-black/40 z-40"></div>
 
 <!-- Mobile Menu -->
-<div id="mobile-menu" 
+<div id="mobile-menu"
      class="hidden fixed top-20 left-0 w-full bg-white z-[999] px-6 py-6">
-
     <!-- HERO -->
     <header class="hero-bg text-white py-24">
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
@@ -147,41 +146,44 @@
             </div>
         </div>
     </footer>
-
-   <script>
-console.log("SCRIPT RUNNING ✅");
+<script>
+console.log("CLEAN NAV SCRIPT");
 
 window.addEventListener("DOMContentLoaded", () => {
     const btn = document.getElementById("hamburger-btn");
     const menu = document.getElementById("mobile-menu");
     const backdrop = document.getElementById("mobile-backdrop");
 
-    if (!btn || !menu) return;
+    // FORCE CLEAN STATE ON LOAD
+    menu.classList.add("hidden");
+    if (backdrop) backdrop.classList.add("hidden");
+    document.body.style.overflow = "";
 
     btn.onclick = () => {
-    const isHidden = menu.classList.contains("hidden");
+        const isOpen = !menu.classList.contains("hidden");
 
-    if (isHidden) {
-        // OPEN
-        menu.classList.remove("hidden");
-        backdrop.classList.remove("hidden");
-        document.body.style.overflow = "hidden"; // lock scroll
-    } else {
-        // CLOSE
-        menu.classList.add("hidden");
-        backdrop.classList.add("hidden");
-        document.body.style.overflow = ""; // restore scroll
-        
-    }
-};
+        if (isOpen) {
+            // CLOSE
+            menu.classList.add("hidden");
+            if (backdrop) backdrop.classList.add("hidden");
+            document.body.style.overflow = "";
+        } else {
+            // OPEN
+            menu.classList.remove("hidden");
+            if (backdrop) backdrop.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        }
+    };
 
     if (backdrop) {
         backdrop.onclick = () => {
             menu.classList.add("hidden");
             backdrop.classList.add("hidden");
+            document.body.style.overflow = "";
         };
     }
 });
 </script>
+
 </body>
 </html>
