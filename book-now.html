@@ -136,18 +136,24 @@ let elements;
 let currentUser = null;
 let bookingType = 'one-time';
 
-/* ===== MOBILE MENU ===== */
-function toggleMobileMenu() {
-    console.log("CLICKED MENU"); // 👈 add this
-    const menu = document.getElementById('mobile-menu');
-    if (!menu) return;
-    menu.classList.toggle('hidden');
-}
+/* ===== LOAD NAVBAR ===== */
+async function loadNavbar() {
+    const res = await fetch('components/navbar.html');
+    const html = await res.text();
 
-function setupMobileMenu() {
-    const menu = document.getElementById('mobile-menu');
-    if (menu) {
-        menu.classList.add('hidden'); // always start closed
+    const container = document.getElementById('navbar');
+    if (!container) return;
+
+    container.innerHTML = html;
+
+    const btn = document.getElementById("hamburger-btn");
+    const menu = document.getElementById("mobile-menu");
+
+    if (btn && menu) {
+        btn.addEventListener("click", () => {
+            console.log("CLICKED MENU");
+            menu.classList.toggle("hidden");
+        });
     }
 }
 
@@ -229,33 +235,9 @@ async function logout() {
 
 /* ===== INIT ===== */
 window.addEventListener("DOMContentLoaded", async () => {
-    await loadNavbar();   // 🔥 LOAD NAV FIRST
-    setupMobileMenu();   // then setup
+    await loadNavbar();  // ✅ navbar loads FIRST
     init();              // then auth
 });
-};
-</script>
-    <script>
-async function loadNavbar() {
-    const res = await fetch('components/navbar.html');
-    const html = await res.text();
-
-    const container = document.getElementById('navbar');
-    if (!container) return;
-
-    container.innerHTML = html;
-
-    // attach click AFTER injection
-    const btn = document.getElementById("hamburger-btn");
-    const menu = document.getElementById("mobile-menu");
-
-    if (btn && menu) {
-        btn.addEventListener("click", () => {
-            console.log("CLICKED MENU"); // debug
-            menu.classList.toggle("hidden");
-        });
-    }
-}
 </script>
 </body>
 </html>
