@@ -228,10 +228,34 @@ async function logout() {
 }
 
 /* ===== INIT ===== */
-window.onload = () => {
-    setupMobileMenu();
-    init();
+window.addEventListener("DOMContentLoaded", async () => {
+    await loadNavbar();   // 🔥 LOAD NAV FIRST
+    setupMobileMenu();   // then setup
+    init();              // then auth
+});
 };
+</script>
+    <script>
+async function loadNavbar() {
+    const res = await fetch('components/navbar.html');
+    const html = await res.text();
+
+    const container = document.getElementById('navbar');
+    if (!container) return;
+
+    container.innerHTML = html;
+
+    // attach click AFTER injection
+    const btn = document.getElementById("hamburger-btn");
+    const menu = document.getElementById("mobile-menu");
+
+    if (btn && menu) {
+        btn.addEventListener("click", () => {
+            console.log("CLICKED MENU"); // debug
+            menu.classList.toggle("hidden");
+        });
+    }
+}
 </script>
 </body>
 </html>
