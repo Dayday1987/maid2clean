@@ -1,36 +1,23 @@
 <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-
-        <!-- Logo -->
-        <div class="flex items-center gap-x-3">
-            <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
-            <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center text-white">🧼</div>
+            <h1 class="text-xl font-semibold">Maid 2 Clean</h1>
         </div>
 
-        <!-- Desktop -->
-        <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-            <a href="index.html" class="hover:text-teal-500">Home</a>
-            <a href="book-now.html" class="hover:text-teal-500">Book Now</a>
-            <a href="services.html" class="hover:text-teal-500">Services</a>
-            <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
-            <a href="messages.html" class="hover:text-teal-500">Messages</a>
+        <div class="hidden md:flex gap-6">
+            <a href="/index.html">Home</a>
+            <a href="/services.html">Services</a>
+            <a href="/dashboard/dashboard.html">Dashboard</a>
         </div>
 
-        <!-- Mobile Button -->
-        <button id="hamburger-btn" class="md:hidden text-4xl text-gray-700">
-            ☰
-        </button>
-
-        <div id="auth-buttons" class="flex items-center gap-x-3"></div>
+        <button id="hamburger-btn" class="md:hidden text-3xl">☰</button>
     </div>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t px-6 py-4">
-        <a href="index.html" class="block py-3">Home</a>
-        <a href="book-now.html" class="block py-3">Book Now</a>
-        <a href="services.html" class="block py-3">Services</a>
-        <a href="dashboard.html" class="block py-3">Dashboard</a>
-        <a href="messages.html" class="block py-3">Messages</a>
+    <div id="mobile-menu" class="hidden md:hidden px-6 py-4">
+        <a href="/index.html" class="block py-2">Home</a>
+        <a href="/services.html" class="block py-2">Services</a>
+        <a href="/dashboard/dashboard.html" class="block py-2">Dashboard</a>
     </div>
 </nav>
