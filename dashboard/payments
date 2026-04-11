@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment - Maid 2 Clean</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+.tail-container * { font-family: 'Poppins', system-ui, sans-serif; }
+</style>
+</head>
+
+<body class="tail-container bg-gray-50">
+
+<div id="navbar"></div>
+
+<div class="max-w-5xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-10">
+
+<!-- SUMMARY -->
+<div class="bg-white p-8 rounded-3xl shadow">
+<h2 class="text-2xl font-semibold mb-6">Booking Summary</h2>
+
+<div class="space-y-3 text-gray-600">
+<p><strong>Service:</strong> <span id="service"></span></p>
+<p><strong>Size:</strong> <span id="sqft"></span></p>
+<p><strong>Date:</strong> <span id="date"></span></p>
+<p><strong>Time:</strong> <span id="time"></span></p>
+</div>
+
+<hr class="my-6">
+
+<div class="text-4xl font-semibold text-teal-500" id="price"></div>
+</div>
+
+<!-- PAYMENT -->
+<div class="bg-white p-8 rounded-3xl shadow">
+
+<h2 class="text-2xl font-semibold mb-6">Payment</h2>
+
+<div id="card-element" class="border rounded-2xl p-4 mb-6"></div>
+
+<button onclick="pay()" class="w-full py-4 bg-teal-500 text-white rounded-2xl text-lg font-semibold">
+Pay Now
+</button>
+
+<p id="status" class="text-center mt-4 text-sm text-gray-500"></p>
+
+</div>
+
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM'; // keep
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_51TJFwZ2MxWcKELxTUlf5FKYkUdVlkWcmfVAcojg9rc1T8tDYzGMy2LyWB6bNFojbmRWHDuLMKTfwNwNsMZfmcIK300XrB93Uk9'; // your key
+
+const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+let elements = stripe.elements();
+let card = elements.create('card');
+
+card.mount('#card-element');
+
+/* ================= LOAD DATA ================= */
+let bookingData = JSON.parse(localStorage.getItem("bookingData"));
+
+if (!bookingData || !bookingData.price) {
+alert("Invalid booking session.");
+window.location.href = "schedule.html";
+}
+
+document.getElementById("service").textContent = bookingData.service;
+document.getElementById("sqft").textContent = bookingData.sqft + " sq ft";
+document.getElementById("date").textContent = bookingData.date;
+document.getElementById("time").textContent = bookingData.time;
+document.getElementById("price").textContent = bookingData.price;
+
+/* ================= PAYMENT ================= */
+async function pay() {
+
+const status = document.getElementById("status");
+status.textContent = "Processing...";
+
+/* 🚨 STEP 1: create payment intent (YOU NEED API ROUTE) */
+const res = await fetch('/api/create-payment-intent', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({
+amount: parseInt(bookingData.price.replace('$','')) * 100
+})
+});
+
+const data = await res.json();
+
+if (!data.clientSecret) {
+status.textContent = "Payment failed to initialize.";
+return;
+}
+
+/* 🚨 STEP 2: confirm card */
+const result = await stripe.confirmCardPayment(data.clientSecret, {
+payment_method: {
+card: card
+}
+});
+
+if (result.error) {
+status.textContent = result.error.message;
+return;
+}
+
+/* ================= SUCCESS ================= */
+status.textContent = "Payment successful!";
+
+/* 🚨 STEP 3: SAVE BOOKING */
+const { data: { user } } = await supabase.auth.getUser();
+
+await supabase.from('bookings').insert({
+user_id: user?.id || null,
+service_type: bookingData.service,
+date: bookingData.date,
+time: bookingData.time,
+amount: parseInt(bookingData.price.replace('$','')),
+status: 'confirmed'
+});
+
+/* CLEAN UP */
+localStorage.removeItem("bookingData");
+
+/* REDIRECT */
+setTimeout(() => {
+window.location.href = "payment-success.html";
+}, 1500);
+
+}
+
+/* ================= NAVBAR ================= */
+async function loadNavbar() {
+const res = await fetch('/components/navbar.html');
+const html = await res.text();
+document.getElementById('navbar').innerHTML = html;
+
+const btn = document.getElementById("hamburger-btn");
+const menu = document.getElementById("mobile-menu");
+
+if (btn && menu) {
+btn.addEventListener("click", () => {
+menu.classList.toggle("hidden");
+});
+}
+}
+
+window.addEventListener("DOMContentLoaded", loadNavbar);
+</script>
+
+</body>
+</html>
