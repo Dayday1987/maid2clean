@@ -4,153 +4,216 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Maid To Clean</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
         :root { --tw-color-primary: #00c4b4; }
-        .tail-container * { font-family: 'Poppins', system_ui, sans-serif; }
+
+        .tail-container * {
+            font-family: 'Poppins', system-ui, sans-serif;
+        }
     </style>
 </head>
+
 <body class="tail-container">
 
-    <div id="navbar"></div>
+<!-- ✅ NAVBAR -->
+<div id="navbar"></div>
 
-    <div class="max-w-7xl mx-auto px-6 py-12">
-        <div class="flex items-center gap-x-6 mb-10">
-            <img src="images/desk.webp" class="w-20 h-20 rounded-3xl object-cover shadow">
-            <div>
-                <h1 class="text-5xl font-semibold">Welcome back, <span id="user-name">Customer</span> 👋</h1>
-                <p id="user-email" class="text-gray-500"></p>
-            </div>
-        </div>
+<div class="max-w-7xl mx-auto px-6 py-12">
 
-        <!-- UPCOMING CLEANINGS -->
-        <div class="mb-12">
-            <h2 class="text-xl font-semibold mb-4 flex items-center gap-x-2"><i class="fa-solid fa-calendar"></i> Upcoming Cleanings</h2>
-            <div id="upcoming-list" class="space-y-4"></div>
-        </div>
-
-        <!-- BOOKING HISTORY -->
-        <div class="mb-12">
-            <h2 class="text-xl font-semibold mb-4">Booking History</h2>
-            <div id="history-list" class="bg-white rounded-3xl shadow overflow-hidden"></div>
-        </div>
-
-        <!-- CONTACT SUPPORT (replaces old message box) -->
-        <div class="bg-white rounded-3xl p-8 shadow mb-12">
-            <h3 class="font-semibold flex items-center gap-x-2 mb-6"><i class="fa-solid fa-envelope"></i> Need to Contact Us?</h3>
-            <p class="text-gray-600 mb-6">For any changes, questions, or special requests, please email our support team.</p>
-            <a href="mailto:stephanie.maidtoclean@gmail.com" 
-               class="inline-flex items-center gap-x-3 bg-teal-500 text-white px-8 py-4 rounded-3xl font-medium">
-                📧 Email Support
-            </a>
-        </div>
-
-        <!-- STATS -->
-        <div class="grid grid-cols-3 gap-6">
-            <div class="bg-white rounded-3xl p-8 text-center">
-                <div class="text-sm text-gray-500">Total Cleanings</div>
-                <div id="total-cleanings" class="text-6xl font-semibold text-teal-500 mt-2">0</div>
-            </div>
-            <div class="bg-white rounded-3xl p-8 text-center">
-                <div class="text-sm text-gray-500">Total Spent</div>
-                <div id="total-spent" class="text-6xl font-semibold text-teal-500 mt-2">$0</div>
-            </div>
-            <div class="bg-white rounded-3xl p-8 text-center">
-                <div class="text-sm text-gray-500">Loyalty Points</div>
-                <div class="text-6xl font-semibold text-teal-500 mt-2">240</div>
-            </div>
+    <!-- HEADER -->
+    <div class="flex items-center gap-x-6 mb-10">
+        <img src="images/desk.webp" class="w-20 h-20 rounded-3xl object-cover shadow">
+        <div>
+            <h1 class="text-5xl font-semibold">
+                Welcome back, <span id="user-name">Customer</span> 👋
+            </h1>
+            <p id="user-email" class="text-gray-500"></p>
         </div>
     </div>
 
-    <script>
-        const SUPABASE_URL = 'https://iyeifutvbcumkrcykbcc.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
+    <!-- UPCOMING -->
+    <div class="mb-12">
+        <h2 class="text-xl font-semibold mb-4 flex items-center gap-x-2">
+            <i class="fa-solid fa-calendar"></i> Upcoming Cleanings
+        </h2>
+        <div id="upcoming-list" class="space-y-4"></div>
+    </div>
 
-        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let currentUser = null;
+    <!-- HISTORY -->
+    <div class="mb-12">
+        <h2 class="text-xl font-semibold mb-4">Booking History</h2>
+        <div id="history-list" class="bg-white rounded-3xl shadow overflow-hidden"></div>
+    </div>
 
-        async function loadDashboard() {
-            const { data: { user } } = await supabase.auth.getUser();
-            currentUser = user;
-            if (!user) return window.location.href = 'index.html';
+    <!-- SUPPORT -->
+    <div class="bg-white rounded-3xl p-8 shadow mb-12">
+        <h3 class="font-semibold flex items-center gap-x-2 mb-6">
+            <i class="fa-solid fa-envelope"></i> Need to Contact Us?
+        </h3>
 
-            document.getElementById('user-name').textContent = user.email.split('@')[0];
-            document.getElementById('user-email').textContent = user.email;
+        <p class="text-gray-600 mb-6">
+            For any changes, questions, or special requests, please email support.
+        </p>
 
-            renderAuthButtons();
-            await loadBookings();
-        }
+        <a href="mailto:stephanie.maidtoclean@gmail.com"
+           class="inline-flex items-center gap-x-3 bg-teal-500 text-white px-8 py-4 rounded-3xl font-medium">
+            📧 Email Support
+        </a>
+    </div>
 
-        function renderAuthButtons() {
-            const container = document.getElementById('auth-buttons');
-            container.innerHTML = `
-                <span class="text-sm font-medium">👋 ${currentUser.email}</span>
-                <button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>
-            `;
-        }
+    <!-- STATS -->
+    <div class="grid grid-cols-3 gap-6">
+        <div class="bg-white rounded-3xl p-8 text-center">
+            <div class="text-sm text-gray-500">Total Cleanings</div>
+            <div id="total-cleanings" class="text-6xl font-semibold text-teal-500 mt-2">0</div>
+        </div>
 
-        async function loadBookings() {
-            const { data: bookings } = await supabase
-                .from('bookings')
-                .select('*')
-                .eq('user_id', currentUser.id)
-                .order('date', { ascending: false });
+        <div class="bg-white rounded-3xl p-8 text-center">
+            <div class="text-sm text-gray-500">Total Spent</div>
+            <div id="total-spent" class="text-6xl font-semibold text-teal-500 mt-2">$0</div>
+        </div>
 
-            let upcomingHTML = '';
-            let totalCleanings = 0;
-            let totalSpent = 0;
+        <div class="bg-white rounded-3xl p-8 text-center">
+            <div class="text-sm text-gray-500">Loyalty Points</div>
+            <div class="text-6xl font-semibold text-teal-500 mt-2">240</div>
+        </div>
+    </div>
 
-            const today = new Date();
+</div>
 
-            bookings?.forEach(booking => {
-                totalCleanings++;
-                totalSpent += booking.amount || 0;
+<script>
+const SUPABASE_URL = 'SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZWlmdXR2YmN1bWtyY3lrYmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjA0NjEsImV4cCI6MjA5MDg5NjQ2MX0.K6it1_bzqLxP150s3LVHXT1Jz54s9TTwGL-3818TSwM';
 
-                const bookingDate = new Date(booking.date);
-                const isUpcoming = bookingDate >= today && booking.status === 'confirmed';
+const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-                if (isUpcoming) {
-                    upcomingHTML += `
-                        <div class="bg-white border border-teal-200 rounded-3xl p-6 flex justify-between items-center">
-                            <div>
-                                <div class="text-teal-600 font-semibold">${booking.date} • ${booking.time}</div>
-                                <div class="text-xl">${booking.service_type}</div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-3xl font-semibold">$${booking.amount}</div>
-                                <div class="text-xs uppercase tracking-widest bg-teal-100 text-teal-700 px-4 py-1 rounded-3xl">Confirmed</div>
-                            </div>
-                        </div>`;
-                }
-            });
+let currentUser = null;
 
-            document.getElementById('upcoming-list').innerHTML = upcomingHTML || 
-                `<p class="text-gray-400 py-8 text-center">No upcoming cleanings yet.<br><a href="book-now.html" class="text-teal-500 underline">Book your first cleaning →</a></p>`;
+/* ================= NAVBAR ================= */
+async function loadNavbar() {
+    const res = await fetch('/components/navbar.html');
+    const html = await res.text();
 
-            document.getElementById('history-list').innerHTML = bookings && bookings.length > 0 
-                ? `<div class="p-8">You have ${bookings.length} total bookings.</div>` 
-                : `<p class="p-12 text-center text-gray-400">No bookings yet.</p>`;
+    const container = document.getElementById('navbar');
+    if (!container) return;
 
-            document.getElementById('total-cleanings').textContent = totalCleanings;
-            document.getElementById('total-spent').textContent = '$' + totalSpent;
-        }
+    container.innerHTML = html;
 
-        async function logout() {
-            await supabase.auth.signOut();
-            window.location.href = 'index.html';
-        }
+    const btn = document.getElementById("hamburger-btn");
+    const menu = document.getElementById("mobile-menu");
 
-        window.onload = loadDashboard;
-        
-function toggleMobileMenu() {
-    const menu = document.getElementById('mobile-menu');
-    if (menu) {
-        menu.classList.toggle('hidden');
+    if (btn && menu) {
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+        });
     }
 }
-    </script>
+
+/* ================= DASHBOARD ================= */
+async function loadDashboard() {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    currentUser = user;
+
+    document.getElementById('user-name').textContent = user.email.split('@')[0];
+    document.getElementById('user-email').textContent = user.email;
+
+    renderAuthButtons();
+    await loadBookings();
+}
+
+function renderAuthButtons() {
+    const container = document.getElementById('auth-buttons');
+    if (!container) return;
+
+    container.innerHTML = `
+        <span class="text-sm font-medium">👋 ${currentUser.email}</span>
+        <button onclick="logout()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm">Logout</button>
+    `;
+}
+
+/* ================= BOOKINGS ================= */
+async function loadBookings() {
+    const { data: bookings, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('date', { ascending: false });
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    let upcomingHTML = '';
+    let totalCleanings = 0;
+    let totalSpent = 0;
+
+    const today = new Date();
+
+    bookings?.forEach(booking => {
+        totalCleanings++;
+        totalSpent += booking.amount || 0;
+
+        const bookingDate = new Date(booking.date);
+        const isUpcoming = bookingDate >= today && booking.status === 'confirmed';
+
+        if (isUpcoming) {
+            upcomingHTML += `
+                <div class="bg-white border border-teal-200 rounded-3xl p-6 flex justify-between items-center">
+                    <div>
+                        <div class="text-teal-600 font-semibold">${booking.date} • ${booking.time || ''}</div>
+                        <div class="text-xl">${booking.service_type}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-semibold">$${booking.amount || 0}</div>
+                        <div class="text-xs uppercase tracking-widest bg-teal-100 text-teal-700 px-4 py-1 rounded-3xl">
+                            ${booking.status}
+                        </div>
+                    </div>
+                </div>`;
+        }
+    });
+
+    document.getElementById('upcoming-list').innerHTML =
+        upcomingHTML || `<p class="text-gray-400 py-8 text-center">
+            No upcoming cleanings yet.<br>
+            <a href="book-now.html" class="text-teal-500 underline">Book now →</a>
+        </p>`;
+
+    document.getElementById('history-list').innerHTML =
+        bookings?.length
+            ? `<div class="p-8">${bookings.length} total bookings</div>`
+            : `<p class="p-12 text-center text-gray-400">No bookings yet</p>`;
+
+    document.getElementById('total-cleanings').textContent = totalCleanings;
+    document.getElementById('total-spent').textContent = '$' + totalSpent;
+}
+
+/* ================= LOGOUT ================= */
+async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = 'index.html';
+}
+
+/* ================= INIT ================= */
+window.addEventListener("DOMContentLoaded", async () => {
+    await loadNavbar();
+    await loadDashboard();
+});
+</script>
+
 </body>
 </html>
