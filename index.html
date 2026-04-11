@@ -4,76 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maid 2 Clean | Montgomery's Premier Cleaning Service</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
         :root { --tw-color-primary: #00c4b4; }
-        .tail-container * { font-family: 'Poppins', system_ui, sans-serif; }
-        .hero-bg { 
-            background: linear-gradient(rgba(0,196,180,0.85), rgba(0,196,180,0.85)), 
-                        url('https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/homepage.webp') center/cover no-repeat; 
+
+        .tail-container * {
+            font-family: 'Poppins', system-ui, sans-serif;
         }
-        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+
+        .hero-bg {
+            background:
+                linear-gradient(rgba(0,196,180,0.85), rgba(0,196,180,0.85)),
+                url('https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/homepage.webp') center/cover no-repeat;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
     </style>
 </head>
+
 <body class="tail-container">
 
-    <!-- NAVBAR -->
-    <nav class="bg-white border-b shadow-sm sticky top-0 z-50">
-    
-    <!-- TOP BAR -->
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        
-        <!-- Logo -->
-        <div class="flex items-center gap-x-3">
-            <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">🧼</div>
-            <h1 class="text-3xl font-semibold text-gray-900">Maid 2 Clean</h1>
-        </div>
+    <!-- ✅ NAVBAR COMPONENT -->
+    <div id="navbar"></div>
 
-        <!-- Desktop Menu -->
-        <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-            <a href="index.html" class="hover:text-teal-500">Home</a>
-            <a href="book-now.html" class="hover:text-teal-500">Book Now</a>
-            <a href="services.html" class="hover:text-teal-500">Services</a>
-            <a href="dashboard.html" class="hover:text-teal-500">Dashboard</a>
-            <a href="messages.html" class="hover:text-teal-500">Messages</a>
-            <span id="admin-link" class="hidden">
-                <a href="admin.html" class="px-5 py-2 bg-amber-500 text-white rounded-3xl text-sm font-semibold flex items-center gap-x-2">
-                    <i class="fa-solid fa-shield-halved"></i> Admin Dashboard
-                </a>
-            </span>
-        </div>
-
-        <!-- Mobile Hamburger -->
-        <button onclick="toggleMobileMenu()" class="md:hidden text-4xl text-gray-700">
-            ☰
-        </button>
-
-        <!-- Auth -->
-        <div id="auth-buttons" class="flex items-center gap-x-3"></div>
-    </div>
-
-    <!-- ✅ MOBILE MENU (FIXED) -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t px-6 py-4">
-        <a href="index.html" class="block py-3 text-sm font-medium">Home</a>
-        <a href="book-now.html" class="block py-3 text-sm font-medium">Book Now</a>
-        <a href="services.html" class="block py-3 text-sm font-medium">Services</a>
-        <a href="dashboard.html" class="block py-3 text-sm font-medium">Dashboard</a>
-        <a href="messages.html" class="block py-3 text-sm font-medium">Messages</a>
-    </div>
-
-</nav>
     <!-- HERO -->
     <header class="hero-bg text-white py-24">
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
             <div>
-                <h2 class="text-6xl md:text-7xl font-semibold leading-none mb-6">Your home deserves<br>the Maid 2 Clean touch</h2>
-                <p class="text-xl md:text-2xl mb-10 max-w-lg">Professional, reliable, and sparkling clean. Book in minutes.</p>
-                <a href="book-now.html" class="inline-flex items-center gap-x-3 bg-white text-teal-600 hover:bg-teal-50 px-10 py-5 rounded-3xl text-xl font-semibold shadow-lg">
+                <h2 class="text-6xl md:text-7xl font-semibold leading-none mb-6">
+                    Your home deserves<br>the Maid 2 Clean touch
+                </h2>
+                <p class="text-xl md:text-2xl mb-10 max-w-lg">
+                    Professional, reliable, and sparkling clean. Book in minutes.
+                </p>
+                <a href="book-now.html"
+                   class="inline-flex items-center gap-x-3 bg-white text-teal-600 hover:bg-teal-50 px-10 py-5 rounded-3xl text-xl font-semibold shadow-lg">
                     Book Now <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -84,30 +61,39 @@
     <section class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
                 <div class="bg-white rounded-3xl p-8 card-hover">
-                    <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/kitchen.webp" class="w-full h-48 object-cover rounded-3xl mb-6" alt="Residential">
+                    <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/kitchen.webp"
+                         class="w-full h-48 object-cover rounded-3xl mb-6">
                     <h4 class="text-2xl font-semibold mb-2">Residential Cleaning</h4>
                     <p class="text-gray-600 mb-6">Weekly, bi-weekly, or one-time home cleaning.</p>
                     <a href="book-now.html" class="text-teal-500 font-medium">Book →</a>
                 </div>
+
                 <div class="bg-white rounded-3xl p-8 card-hover">
-                    <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/deep-clean.webp" class="w-full h-48 object-cover rounded-3xl mb-6" alt="Deep Cleaning">
+                    <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/deep-clean.webp"
+                         class="w-full h-48 object-cover rounded-3xl mb-6">
                     <h4 class="text-2xl font-semibold mb-2">Deep Cleaning</h4>
                     <p class="text-gray-600 mb-6">Spring cleaning, move-in/move-out, post-renovation.</p>
                     <a href="book-now.html" class="text-teal-500 font-medium">Book →</a>
                 </div>
+
                 <div class="bg-white rounded-3xl p-8 card-hover">
-                    <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/commercial-office.webp" class="w-full h-48 object-cover rounded-3xl mb-6" alt="Office">
+                    <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/commercial-office.webp"
+                         class="w-full h-48 object-cover rounded-3xl mb-6">
                     <h4 class="text-2xl font-semibold mb-2">Office & Commercial</h4>
                     <p class="text-gray-600 mb-6">Keep your workspace pristine.</p>
                     <a href="book-now.html" class="text-teal-500 font-medium">Book →</a>
                 </div>
+
                 <div class="bg-white rounded-3xl p-8 card-hover">
-                    <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/move-in-out.webp" class="w-full h-48 object-cover rounded-3xl mb-6" alt="Move In Out">
-                    <h4 class="text-2xl font-semibold mb-2">Move-In / Move-Out & Specialty</h4>
+                    <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/move-in-out.webp"
+                         class="w-full h-48 object-cover rounded-3xl mb-6">
+                    <h4 class="text-2xl font-semibold mb-2">Move-In / Move-Out</h4>
                     <p class="text-gray-600 mb-6">Construction, new homes, stairs, and more.</p>
                     <a href="book-now.html" class="text-teal-500 font-medium">Book →</a>
                 </div>
+
             </div>
         </div>
     </section>
@@ -115,11 +101,17 @@
     <!-- TESTIMONIALS -->
     <section class="py-20">
         <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-center text-4xl font-semibold mb-12">What our Montgomery neighbors say</h2>
+            <h2 class="text-center text-4xl font-semibold mb-12">
+                What our Montgomery neighbors say
+            </h2>
+
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="bg-white p-8 rounded-3xl shadow">
-                    <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/profile.webp" class="w-12 h-12 rounded-2xl mb-6">
-                    <p class="italic">"Stephanie and her team transformed my house in just 3 hours..."</p>
+                    <img src="https://raw.githubusercontent.com/Dayday1987/maid2clean/main/images/profile.webp"
+                         class="w-12 h-12 rounded-2xl mb-6">
+                    <p class="italic">
+                        "Stephanie and her team transformed my house in just 3 hours..."
+                    </p>
                     <div class="mt-8 font-semibold">Sarah T. – Prattville, AL</div>
                 </div>
             </div>
@@ -129,31 +121,53 @@
     <!-- FOOTER -->
     <footer class="bg-gray-900 text-white pt-16 pb-12">
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-12">
+
             <div class="md:col-span-4">
-                <div class="flex items-center gap-x-3 text-white mb-6">
+                <div class="flex items-center gap-x-3 mb-6">
                     <div class="w-10 h-10 bg-teal-500 rounded-2xl flex items-center justify-center text-3xl">🧼</div>
                     <h1 class="text-4xl font-semibold">Maid 2 Clean</h1>
                 </div>
                 <p class="text-gray-400">Professional cleaning services you can trust.</p>
             </div>
+
             <div class="md:col-span-2">
                 <h4 class="text-xl font-semibold mb-6">Service Areas</h4>
-                <p class="mb-2 text-gray-300">Montgomery AL</p>
-                <p class="mb-2 text-gray-300">Prattville AL</p>
-                <p class="mb-2 text-gray-300">Wetumpka AL</p>
-                <p class="mb-2 text-gray-300">Hope Hull AL</p>
-                <p class="mb-2 text-gray-300">Tallassee AL</p>
+                <p class="text-gray-300">Montgomery AL</p>
+                <p class="text-gray-300">Prattville AL</p>
+                <p class="text-gray-300">Wetumpka AL</p>
+                <p class="text-gray-300">Hope Hull AL</p>
+                <p class="text-gray-300">Tallassee AL</p>
             </div>
+
         </div>
     </footer>
-<script>
-function toggleMobileMenu() {
-    const menu = document.getElementById('mobile-menu');
-    if (menu) {
-        menu.classList.toggle('hidden');
+
+    <!-- ✅ NAVBAR LOADER -->
+    <script>
+    async function loadNavbar() {
+        const res = await fetch('/components/navbar.html');
+        const html = await res.text();
+
+        const container = document.getElementById('navbar');
+        if (!container) return;
+
+        container.innerHTML = html;
+
+        const btn = document.getElementById("hamburger-btn");
+        const menu = document.getElementById("mobile-menu");
+
+        if (btn && menu) {
+            btn.addEventListener("click", () => {
+                menu.classList.toggle("hidden");
+            });
+        }
     }
-}
-</script>
+
+    window.addEventListener("DOMContentLoaded", loadNavbar);
+    </script>
+
+    <!-- ✅ GLOBAL APP SCRIPT -->
+    <script src="/js/app.js" defer></script>
 
 </body>
 </html>
